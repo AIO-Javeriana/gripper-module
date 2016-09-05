@@ -6,7 +6,7 @@
 #include <mutex>
 #include <condition_variable>
 #include <string>
-#include "json.hpp"
+#include "./lib/json.hpp"
 #ifdef WIN32
 
 #define HIGHLIGHT(__O__) std::cout<<__O__<<std::endl
