@@ -6,3 +6,6 @@ gripper_module
 libsioclient.a
 libsioclient_tls.a
 Makefile
+*~
+*.swp
+*.swo
