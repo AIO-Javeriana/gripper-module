@@ -2,7 +2,7 @@
 
 To get you started with C++ 11, required cmake 3.1 or later.
 # Check version cmake
-   $ cmake -version
+    $ cmake -version
 
 # Unistall cmake 
     $ sudo apt-get remove cmake
