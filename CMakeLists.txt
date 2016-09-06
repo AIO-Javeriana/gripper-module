@@ -1,3 +1,7 @@
+#SET (BOOST_ROOT "./boost_1_58_0")
+#SET (BOOST_INCLUDEDIR "./boost_1_58_0")
+#SET (BOOST_LIBRARYDIR "./boost_1_58_0/lib")
+#SET (Boost_INCLUDE_DIRS "./boost_1_58_0")
 cmake_minimum_required(VERSION 3.1.0 FATAL_ERROR)
 #include(${CMAKE_CURRENT_SOURCE_DIR}/../../CMakeLists.txt)
 include(${CMAKE_CURRENT_SOURCE_DIR}/libs/CMakeLists.txt)

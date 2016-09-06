@@ -77,7 +77,7 @@ class CommunicationChannel{
     connection_listener l;
     socket::ptr current_socket;
     bool connect_finish_;
-    string url="http://localhost:9090";
+    string url="";
 public:
 
 
@@ -104,6 +104,14 @@ public:
             current_socket->on("BLINK", sio::socket::event_listener_aux([&](string const& name, message::ptr const& data, bool isAck,message::list &ack_resp){
                 _lock.lock();
                 cout<<"BLINK"<<endl;
+				json reply_info={
+					  {"ID","gripper_module"},
+					  {"STATUS","DONE"},
+					  {"MSG",""}
+					  
+				};
+				string reply="";
+				current_socket->emit("ACTION_FINISH", reply_info.dump() );
                 //participants = data->get_map()["numUsers"]->get_int();
                 //id = data->get_map()["id"]->get_string();
                 //bool plural = participants !=1;
@@ -267,8 +275,10 @@ int main(int argc ,const char* args[])
     solve2[5]="1 1";
     //solve2[1]="2 1 0"; "0 3 2 1"; 1 0 3 2
     //solve2[2]="3 0 0";
-    CommunicationChannel st("ws://localhost",9090);
-    st.start();
+    CommunicationChannel st("ws://10.220.16.18",9090);
+	//CommunicationChannel st("ws://localhost",9090);	
+        
+	st.start();
     /*
     string nickname;
     while (nickname.length() == 0) {
