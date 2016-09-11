@@ -73,14 +73,13 @@ class CommunicationChannel{
     sio::client h;
     connection_listener l;
     socket::ptr current_socket;
-    bool connect_finish_;
+    bool subscribed;
     string url="";
 public:
 
 
     CommunicationChannel(string host,int port):l(h){
-        participants=-1;
-        connect_finish_ = false;
+       this->subscribed=false;
         this->url=host+":"+to_string(port);
     }
 
@@ -96,33 +95,36 @@ public:
         }
         _lock.unlock();
         current_socket = h.socket();
+		bind_events();
     }
-    void subscription(string &module_info){
-            current_socket->on("SUBSCRIPTION-REPLY", sio::socket::event_listener_aux([&](string const& name, message::ptr const& data, bool isAck,message::list &ack_resp){
+  
+   void subscription(string &module_info){
+            current_socket->emit("SUBSCRIPTION", module_info);
+    }
+  
+    void bind_events(){
+		   current_socket->on("SUBSCRIPTION-REPLY", sio::socket::event_listener_aux([&](string const& name, message::ptr const& data, bool isAck,message::list &ack_resp){
                 _lock.lock();
 				json dataJSON=json::parse((data->get_string()));
 				module_id=dataJSON["ID"];
                 HIGHLIGHT("MODULE SUBSCRIBED \n ID "<<module_id);//;
-				// EM(user<<":"<<message);                
+				// EM(user<<":"<<message); 
+				this->subscribed=true;		
+       	               
 				_cond.notify_all();
                 _lock.unlock();
                 current_socket->off("login");
             }));
-            current_socket->emit("SUBSCRIPTION", module_info);
-            _lock.lock();
-            _lock.unlock();
-            //bind_events();
-
-    }
-    void bind_events(){
 			current_socket->on("BLINK", sio::socket::event_listener_aux([&](string const& name, message::ptr const& data, bool isAck,message::list &ack_resp){
                 _lock.lock();
 				json dataJSON=json::parse((data->get_string()));
-                EM("\t BLINK");
+                EM("\t BLINK "<<dataJSON);
+				//cout<<"\t BLINK "<<dataJSON<<endl;
 				json reply_info={
 					  {"ID","gripper_module"},
 					  {"STATUS","DONE"},
-					  {"MSG",""}
+					  {"MSG",""},
+					  {"ID_TASK",dataJSON["ID_TASK"]}
 					  
 				};
 				string reply="";
