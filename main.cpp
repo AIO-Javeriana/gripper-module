@@ -6,6 +6,7 @@
 #include <mutex>
 #include <condition_variable>
 #include <string>
+#include <queue>
 
 #ifdef WIN32
 
@@ -68,19 +69,86 @@ int participants = -1;
 
 socket::ptr current_socket;
 
+class TaskInfo{
+    json task;
+    bool completed;
+    bool error;
+
+  public:
+      TaskInfo(json task){
+        this->task=task;
+        this->completed=false;
+        this->error=false;
+
+      }
+      void setTask(json task){
+        this->task=task;
+      }
+      json getTask(){
+        return this->task;
+      }
+      void completedTask(){
+          this->completed=true;
+      }
+      void errorTask(){
+          this->completed=true;
+      }
+      bool isCompletedTask(){
+          return this->completed;
+      }
+      bool isError(){
+          return this->error;
+      }
+};
+
+class Services{
+    queue<TaskInfo> tasksInfo;
+
+
+  public:
+      Services(){
+
+      }
+
+      bool assessTask(json task){
+          if (task["COMMAND"]=="BLINK") {
+              this->tasksInfo.push(TaskInfo(task));
+              return true;
+          }
+          return false;
+      }
+
+      TaskInfo makeTaskFront(){
+            TaskInfo task=this->tasksInfo.front();
+            this->tasksInfo.pop();
+            task.completedTask();
+            return task;
+      }
+
+      bool isEmptyTasks(){
+            return this->tasksInfo.empty();
+      }
+
+
+};
+
+
+
 class CommunicationChannel{
     //int participants ;
     sio::client h;
     connection_listener l;
     socket::ptr current_socket;
+    Services services;
     bool subscribed;
     string url="";
 public:
 
 
-    CommunicationChannel(string host,int port):l(h){
+    CommunicationChannel(string host,int port,Services services):l(h){
        this->subscribed=false;
         this->url=host+":"+to_string(port);
+        this->services=services;
     }
 
     void start(){
@@ -97,46 +165,65 @@ public:
         current_socket = h.socket();
 		bind_events();
     }
-  
+
    void subscription(string &module_info){
             current_socket->emit("SUBSCRIPTION", module_info);
     }
-  
+
     void bind_events(){
 		   current_socket->on("SUBSCRIPTION-REPLY", sio::socket::event_listener_aux([&](string const& name, message::ptr const& data, bool isAck,message::list &ack_resp){
                 _lock.lock();
-				json dataJSON=json::parse((data->get_string()));
-				module_id=dataJSON["ID"];
-                HIGHLIGHT("MODULE SUBSCRIBED \n ID "<<module_id);//;
-				// EM(user<<":"<<message); 
-				this->subscribed=true;		
-       	               
-				_cond.notify_all();
+        				json dataJSON=json::parse((data->get_string()));
+        				module_id=dataJSON["ID"];
+                        HIGHLIGHT("MODULE SUBSCRIBED \n ID "<<module_id);//;
+        				// EM(user<<":"<<message);
+        				this->subscribed=true;
+
+        				_cond.notify_all();
                 _lock.unlock();
                 current_socket->off("login");
             }));
-			current_socket->on("BLINK", sio::socket::event_listener_aux([&](string const& name, message::ptr const& data, bool isAck,message::list &ack_resp){
+			current_socket->on("TASK-ASSIGN", sio::socket::event_listener_aux([&](string const& name, message::ptr const& data, bool isAck,message::list &ack_resp){
                 _lock.lock();
-				json dataJSON=json::parse((data->get_string()));
-                EM("\t BLINK "<<dataJSON);
-				//cout<<"\t BLINK "<<dataJSON<<endl;
-				json reply_info={
-					  {"ID","gripper_module"},
-					  {"STATUS","DONE"},
-					  {"MSG",""},
-					  {"ID_TASK",dataJSON["ID_TASK"]}
-					  
-				};
-				string reply="";
-				current_socket->emit("ACTION_FINISH", reply_info.dump() );
-                //participants = data->get_map()["numUsers"]->get_int();
-                //id = data->get_map()["id"]->get_string();
-                //bool plural = participants !=1;
-                //HIGHLIGHT("Welcome to TAQUIN \nthere"<<(plural?" are ":"'s ")<< participants<<(plural?" participants":" participant")<<"\n Your ID "<<id);//;
-				// EM(user<<":"<<message);                
-		        _lock.unlock();
+        				json dataJSON=json::parse((data->get_string()));
+                EM("\t TASK-ASSING "<<dataJSON);
+        				json reply_info={
+        					  {"ID","gripper_module"},
+        					  {"REPLY","ACCEPTED"},
+        					  {"ID_TASK",dataJSON["ID_TASK"]}
+                };
+                if (!this->services.assessTask(dataJSON)){
+                  reply_info["REPLY"]="REFUSE";
+                }
+        				current_socket->emit("TASK-ASSIGN-REPLY", reply_info.dump() );
+    		        _lock.unlock();
             }));
-        	
+      current_socket->on("ALL-BEGINS", sio::socket::event_listener_aux([&](string const& name, message::ptr const& data, bool isAck,message::list &ack_resp){
+                _lock.lock();
+                json dataJSON=json::parse((data->get_string()));
+                EM("\t ALL-BEGINS "<<dataJSON);
+                json reply_info={
+                    {"ID","gripper_module"},
+                    {"STATUS","DONE"},//error
+                    {"MSG",""},
+                    {"ID_TASK",dataJSON["ID_TASK"]}
+
+                };
+                string reply="";
+                while (!services.isEmptyTasks()){
+                      //_lock.lock();
+                      TaskInfo task=services.makeTaskFront();
+                      reply_info["ID_TASK"]=task.getTask()["ID_TASK"];
+                      if(!task.isError()){
+                        reply_info["STATUS"]="DONE";
+                      }else{
+                          reply_info["STATUS"]="ERROR";
+                      }
+                      current_socket->emit("ACTION-FINISH", reply_info.dump() );
+                      //_lock.unlock();
+                }
+                _lock.unlock();
+            }));
 
         }
 
@@ -186,10 +273,10 @@ int main(int argc ,const char* args[])
     };
     //{"COMMANDS":[["COMMAND","BLINK"],["PARAMS",[""]]],"ID":"gripper_module"}
     //{"ID":"audiovisual_module","COMMANDS":[{"COMMAND":"BLINK","PARAMS":[]}]}
-    
-    CommunicationChannel st("ws://10.220.16.18",9090);
-	//CommunicationChannel st("ws://localhost",9090);	
-        
+    Services services;
+    CommunicationChannel st("ws://10.220.16.18",9090,services);
+	//CommunicationChannel st("ws://localhost",9090);
+
 	st.start();
     string info=module_info.dump();
     st.subscription(info);
