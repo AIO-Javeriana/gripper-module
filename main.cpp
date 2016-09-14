@@ -7,6 +7,7 @@
 #include <condition_variable>
 #include <string>
 #include <queue>
+#include <map>
 
 #ifdef WIN32
 
@@ -102,7 +103,7 @@ class CommandInfo{
 };
 
 class Services{
-    queue<CommandInfo> commandsInfo;
+    map<long,queue<CommandInfo>> commandsInfo;
 
 
   public:
@@ -112,21 +113,24 @@ class Services{
 
       bool assessWork(json command){
           if (command["COMMAND"]=="BLINK") {
-              this->commandsInfo.push(CommandInfo(command));
+              this->commandsInfo[command["GROUP_ID"]].push(CommandInfo(command));
+              return true;
+          }else if (command["COMMAND"]=="DECIR") {
+              this->commandsInfo[command["GROUP_ID"]].push(CommandInfo(command));
               return true;
           }
           return false;
       }
 
-      CommandInfo makeWorkFront(){
-            CommandInfo command=this->commandsInfo.front();
-            this->commandsInfo.pop();
+      CommandInfo makeWorkFront(long group_id){
+            CommandInfo command=this->commandsInfo[group_id].front();
+            this->commandsInfo[group_id].pop();
             command.completedWork();
             return command;
       }
 
-      bool isEmptyCommands(){
-            return this->commandsInfo.empty();
+      bool isEmptyCommands(long group_id){
+            return this->commandsInfo[group_id].empty();
       }
 
 
@@ -190,7 +194,10 @@ public:
         				json reply_info={
         					  {"MODULE_ID","gripper_module"},
         					  {"REPLY","ACCEPTED"},
-        					  {"COMMAND_ID",dataJSON["COMMAND_ID"]}
+                    {"COMMAND_ID",dataJSON["COMMAND_ID"]},
+                    {"GROUP_ID",dataJSON["GROUP_ID"]}
+
+
                 };
                 if (!this->services.assessWork(dataJSON)){
                   reply_info["REPLY"]="REFUSE";
@@ -205,15 +212,16 @@ public:
                 json reply_info={
                     {"MODULE_ID","gripper_module"},
                     {"STATUS","DONE"},//error
-                    {"MSG",""},
-                    {"COMMAND_ID",dataJSON["COMMAND_ID"]}
+                    {"MSG",""}
+                    //{"COMMAND_ID",dataJSON["COMMAND_ID"]}
 
                 };
                 string reply="";
-                while (!services.isEmptyCommands()){
+                while (!services.isEmptyCommands(dataJSON["GROUP_ID"])){
                       //_lock.lock();
-                      CommandInfo command=services.makeWorkFront();
+                      CommandInfo command=services.makeWorkFront(dataJSON["GROUP_ID"]);
                       reply_info["COMMAND_ID"]=command.getCommand()["COMMAND_ID"];
+                      reply_info["GROUP_ID"]=command.getCommand()["GROUP_ID"];
                       if(!command.isError()){
                         reply_info["STATUS"]="DONE";
                       }else{
@@ -267,6 +275,10 @@ int main(int argc ,const char* args[])
             {
               {"COMMAND","BLINK"},
               {"PARAMS",json::array({""})}
+            },
+            {
+              {"COMMAND","DECIR"},
+              {"PARAMS",json::array({"TEXTO","TONO"})}
             }
           })
       }
