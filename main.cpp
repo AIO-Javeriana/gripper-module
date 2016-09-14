@@ -69,28 +69,28 @@ int participants = -1;
 
 socket::ptr current_socket;
 
-class TaskInfo{
-    json task;
+class CommandInfo{
+    json command;
     bool completed;
     bool error;
 
   public:
-      TaskInfo(json task){
-        this->task=task;
+      CommandInfo(json command){
+        this->command=command;
         this->completed=false;
         this->error=false;
 
       }
-      void setTask(json task){
-        this->task=task;
+      void setCommand(json command){
+        this->command=command;
       }
-      json getTask(){
-        return this->task;
+      json getCommand(){
+        return this->command;
       }
-      void completedTask(){
+      void completedWork(){
           this->completed=true;
       }
-      void errorTask(){
+      void errorWork(){
           this->completed=true;
       }
       bool isCompletedTask(){
@@ -102,7 +102,7 @@ class TaskInfo{
 };
 
 class Services{
-    queue<TaskInfo> tasksInfo;
+    queue<CommandInfo> commandsInfo;
 
 
   public:
@@ -110,23 +110,23 @@ class Services{
 
       }
 
-      bool assessTask(json task){
-          if (task["COMMAND"]=="BLINK") {
-              this->tasksInfo.push(TaskInfo(task));
+      bool assessWork(json command){
+          if (command["COMMAND"]=="BLINK") {
+              this->commandsInfo.push(CommandInfo(command));
               return true;
           }
           return false;
       }
 
-      TaskInfo makeTaskFront(){
-            TaskInfo task=this->tasksInfo.front();
-            this->tasksInfo.pop();
-            task.completedTask();
-            return task;
+      CommandInfo makeWorkFront(){
+            CommandInfo command=this->commandsInfo.front();
+            this->commandsInfo.pop();
+            command.completedWork();
+            return command;
       }
 
-      bool isEmptyTasks(){
-            return this->tasksInfo.empty();
+      bool isEmptyCommands(){
+            return this->commandsInfo.empty();
       }
 
 
@@ -174,7 +174,7 @@ public:
 		   current_socket->on("SUBSCRIPTION-REPLY", sio::socket::event_listener_aux([&](string const& name, message::ptr const& data, bool isAck,message::list &ack_resp){
                 _lock.lock();
         				json dataJSON=json::parse((data->get_string()));
-        				module_id=dataJSON["ID"];
+        				module_id=dataJSON["MODULE_ID"];
                         HIGHLIGHT("MODULE SUBSCRIBED \n ID "<<module_id);//;
         				// EM(user<<":"<<message);
         				this->subscribed=true;
@@ -183,19 +183,19 @@ public:
                 _lock.unlock();
                 current_socket->off("login");
             }));
-			current_socket->on("TASK-ASSIGN", sio::socket::event_listener_aux([&](string const& name, message::ptr const& data, bool isAck,message::list &ack_resp){
+			current_socket->on("WORK-ASSIGN", sio::socket::event_listener_aux([&](string const& name, message::ptr const& data, bool isAck,message::list &ack_resp){
                 _lock.lock();
         				json dataJSON=json::parse((data->get_string()));
-                EM("\t TASK-ASSING "<<dataJSON);
+                EM("\t WORK-ASSING "<<dataJSON);
         				json reply_info={
-        					  {"ID","gripper_module"},
+        					  {"MODULE_ID","gripper_module"},
         					  {"REPLY","ACCEPTED"},
-        					  {"ID_TASK",dataJSON["ID_TASK"]}
+        					  {"COMMAND_ID",dataJSON["COMMAND_ID"]}
                 };
-                if (!this->services.assessTask(dataJSON)){
+                if (!this->services.assessWork(dataJSON)){
                   reply_info["REPLY"]="REFUSE";
                 }
-        				current_socket->emit("TASK-ASSIGN-REPLY", reply_info.dump() );
+        				current_socket->emit("WORK-ASSIGN-REPLY", reply_info.dump() );
     		        _lock.unlock();
             }));
       current_socket->on("ALL-BEGINS", sio::socket::event_listener_aux([&](string const& name, message::ptr const& data, bool isAck,message::list &ack_resp){
@@ -203,18 +203,18 @@ public:
                 json dataJSON=json::parse((data->get_string()));
                 EM("\t ALL-BEGINS "<<dataJSON);
                 json reply_info={
-                    {"ID","gripper_module"},
+                    {"MODULE_ID","gripper_module"},
                     {"STATUS","DONE"},//error
                     {"MSG",""},
-                    {"ID_TASK",dataJSON["ID_TASK"]}
+                    {"COMMAND_ID",dataJSON["COMMAND_ID"]}
 
                 };
                 string reply="";
-                while (!services.isEmptyTasks()){
+                while (!services.isEmptyCommands()){
                       //_lock.lock();
-                      TaskInfo task=services.makeTaskFront();
-                      reply_info["ID_TASK"]=task.getTask()["ID_TASK"];
-                      if(!task.isError()){
+                      CommandInfo command=services.makeWorkFront();
+                      reply_info["COMMAND_ID"]=command.getCommand()["COMMAND_ID"];
+                      if(!command.isError()){
                         reply_info["STATUS"]="DONE";
                       }else{
                           reply_info["STATUS"]="ERROR";
@@ -262,7 +262,7 @@ int main(int argc ,const char* args[])
 {
 
     json module_info={
-      {"ID",module_id},
+      {"MODULE_ID",module_id},
       {"COMMANDS",json::array({
             {
               {"COMMAND","BLINK"},
