@@ -101,14 +101,14 @@ class CommandInfo{
           return this->error;
       }
 };
-
+//8p9vn5
 class Services{
     map<long,queue<CommandInfo>> commandsInfo;
-
+    bool working;
 
   public:
       Services(){
-
+          this->working=false;
       }
 
       bool assessWork(json command){
@@ -133,6 +133,13 @@ class Services{
             return this->commandsInfo[group_id].empty();
       }
 
+      void setWorking(bool working){
+          this->working=working;
+      }
+
+      bool isWorking(){
+          return this->working;
+      }
 
 };
 
@@ -196,8 +203,6 @@ public:
         					  {"REPLY","ACCEPTED"},
                     {"COMMAND_ID",dataJSON["COMMAND_ID"]},
                     {"GROUP_ID",dataJSON["GROUP_ID"]}
-
-
                 };
                 if (!this->services.assessWork(dataJSON)){
                   reply_info["REPLY"]="REFUSE";
@@ -217,6 +222,7 @@ public:
 
                 };
                 string reply="";
+                this->services.setWorking(true);
                 while (!services.isEmptyCommands(dataJSON["GROUP_ID"])){
                       //_lock.lock();
                       CommandInfo command=services.makeWorkFront(dataJSON["GROUP_ID"]);
@@ -230,8 +236,28 @@ public:
                       current_socket->emit("ACTION-FINISH", reply_info.dump() );
                       //_lock.unlock();
                 }
+                std::cout << "ACTION-FINISH" << std::endl;
+                this->services.setWorking(false);
                 _lock.unlock();
             }));
+            current_socket->on("WORK-STATUS", sio::socket::event_listener_aux([&](string const& name, message::ptr const& data, bool isAck,message::list &ack_resp){
+                      _lock.lock();
+              				json dataJSON=json::parse((data->get_string()));
+                      EM("\t WORK-STATUS "<<dataJSON);
+              				json reply_info={
+              					  {"MODULE_ID","gripper_module"},
+              					  {"STATUS","ERROR"},
+                          {"COMMAND_ID",dataJSON["COMMAND_ID"]},
+                          {"GROUP_ID",dataJSON["GROUP_ID"]},
+                          {"MSG",""}
+                      };
+                      if (!this->services.isWorking()){
+                        reply_info["STATUS"]="WORKING";
+                      }
+              				current_socket->emit("WORK-STATUS-REPLY", reply_info.dump() );
+          		        _lock.unlock();
+                  }));
+
 
         }
 
@@ -293,7 +319,7 @@ int main(int argc ,const char* args[])
     string info=module_info.dump();
     st.subscription(info);
 	current_socket=st.getCurrent_socket();
-    HIGHLIGHT("Start to Gripper Module\n'$exit' : exit chat\n");
+    HIGHLIGHT("Start to Gripper Module\n'$exit' : Shut Down Module\n");
     for (std::string line; std::getline(std::cin, line);) {
         if(line.length()>0)
         {
