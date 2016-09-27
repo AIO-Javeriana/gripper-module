@@ -1,6 +1,6 @@
 # Gripper-module
 
-This module is development with C++ 11 and [socket.io-clientpp](https://github.com/ebshimizu/socket.io-clientpp) for communication channel.
+This module is development with C++ 11 and [socket.io-client-cpp](https://github.com/socketio/socket.io-client-cpp) for communication channel.
 # Check version cmake
 > Required cmake 3.1 or later.
     $ cmake -version
