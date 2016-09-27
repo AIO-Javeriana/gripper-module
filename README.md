@@ -13,7 +13,7 @@ This module is development with C++ 11 and [socket.io-client-cpp](https://github
 
     $ sudo apt-get install cmake libblkid-dev e2fslibs-dev libboost-all-dev libaudit-dev
     
-### Install Mobulity Module c++ 11
+### Install Mobility Module c++ 11
     $ git clone https://github.com/AIO-Javeriana/mobility-module.git
     $ cd mobility-module
     $ cmake
