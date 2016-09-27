@@ -1,19 +1,19 @@
 # Gripper-module
 
 This module is development with C++ 11 and [socket.io-client-cpp](https://github.com/socketio/socket.io-client-cpp) for communication channel.
-# Check version cmake
+### Check version cmake
 > Required cmake 3.1 or later.
 
     $ cmake -version
 
 ## Installation First option
 
-# Install dependencies    
+### Install dependencies    
 > install library from repository
 
     $ sudo apt-get install cmake libblkid-dev e2fslibs-dev libboost-all-dev libaudit-dev
     
-# Install client c++ 11
+### Install Mobulity Module c++ 11
     $ git clone https://github.com/AIO-Javeriana/mobility-module.git
     $ cd mobility-module
     $ cmake
@@ -22,10 +22,10 @@ This module is development with C++ 11 and [socket.io-client-cpp](https://github
 
 ## Installation Second option
 
-# Unistall cmake(if is necessary) 
+### Unistall cmake(if is necessary) 
     $ sudo apt-get remove cmake
     $ sudo apt-get autoremove
-# Install cmake 3.4(if is necessary)
+### Install cmake 3.4(if is necessary)
     $ wget http://www.cmake.org/files/v3.4/cmake-3.4.1.tar.gz 
     $ tar -xvzf cmake-3.4.1.tar.gz 
     $ cd cmake-3.4.1/ 
@@ -34,7 +34,7 @@ This module is development with C++ 11 and [socket.io-client-cpp](https://github
     $ sudo make install
     $ update-alternatives --install /usr/bin/cmake cmake /usr/local/bin/cmake 1 --force
 
-# Install client c++ 11
+### Install Mobulity Module c++ 11
 	
     $ git clone https://github.com/AIO-Javeriana/mobility-module.git
     $ cd mobility-module
