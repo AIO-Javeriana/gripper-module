@@ -6,7 +6,7 @@ This module was developed in with C++ 11 and using [socket.io-client-cpp](https:
 
     $ cmake -version
 
-## Installation First option
+## First option Installation
 
 ### Install dependencies    
 > install library from repository
@@ -20,7 +20,7 @@ This module was developed in with C++ 11 and using [socket.io-client-cpp](https:
     $ make
     $ ./mobility_module
 
-## Installation Second option
+## Second option Installation
 
 ### Unistall cmake(if is necessary) 
     $ sudo apt-get remove cmake
