@@ -3,12 +3,14 @@
 This module is development with C++ 11 and [socket.io-client-cpp](https://github.com/socketio/socket.io-client-cpp) for communication channel.
 # Check version cmake
 > Required cmake 3.1 or later.
+
     $ cmake -version
 
 ## Installation First option
 
 # Install dependencies    
 > install library from repository
+
     $ sudo apt-get install cmake libblkid-dev e2fslibs-dev libboost-all-dev libaudit-dev
     
 # Install client c++ 11
