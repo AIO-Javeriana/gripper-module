@@ -1,4 +1,4 @@
-# Gripper-module
+# Mobility-Module
 
 This module was developed in with C++ 11 and using [socket.io-client-cpp](https://github.com/socketio/socket.io-client-cpp) for communication channel.
 ### Check version cmake

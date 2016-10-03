@@ -8,6 +8,7 @@
 #include <string>
 #include <queue>
 #include <map>
+#inclide "CommunicationChannel.cpp"
 
 #ifdef WIN32
 
@@ -30,7 +31,7 @@ using namespace std;
 std::mutex _lock;
 std::condition_variable_any _cond;
 bool connect_finish = false;
-string module_id="gripper_module";
+string module_id="mobility_module";
 
 
 
