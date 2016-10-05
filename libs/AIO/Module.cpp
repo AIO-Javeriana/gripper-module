@@ -1,6 +1,4 @@
-
-
-#include "./libs/json.hpp"
+#include <json.hpp>
 #include <string>
 #include <queue>
 #include <map>

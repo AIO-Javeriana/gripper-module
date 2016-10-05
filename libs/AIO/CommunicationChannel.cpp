@@ -1,6 +1,7 @@
-#include "./libs/src/sio_client.h"
-#include "./libs/json.hpp"
-#include "CommunicationEvents.cpp"
+
+#include <sio_client.h>
+#include <json.hpp>
+#include <CommunicationEvents.cpp>
 
 #include <functional>
 #include <iostream>

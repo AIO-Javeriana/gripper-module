@@ -1,20 +1,63 @@
-#include "Module.cpp"
-#include "CommunicationChannel.cpp"
+#include <Module.cpp>
+#include <CommunicationChannel.cpp>
 #include <string>
 #include <queue>
 #include <map>
+//-----------------------
+#include <stdio.h>
+#include <wiringPi.h>
 
-using json = nlohmann::json;
+
+#include <ZumoReflectanceSensorArray.h>
+
+//using json = nlohmann::json;
 using namespace std;
+
+#define	LED	26
+#define NUM_SENSORS 6
+void test(){
+
+  printf ("ZumoReflectanceSensorArray\n") ;
+
+  wiringPiSetup () ;
+  pinMode (LED, OUTPUT) ;
+  ZumoReflectanceSensorArray reflectanceSensors;
+  unsigned int sensorValues[NUM_SENSORS];
+  reflectanceSensors.init();
+  digitalWrite (LED, HIGH) ;	// On
+  unsigned long startTime = millis();
+  while(millis() - startTime < 10000)   // make the calibration take 10 seconds
+  {
+    reflectanceSensors.calibrate();
+  }
+  digitalWrite (LED, LOW) ;	// Off
+
+
+
+  for (;;){
+   // delay (500) ;		// mS
+   // delay (500) ;
+		unsigned int position = reflectanceSensors.readLine(sensorValues);
+		// To get raw sensor values instead, call:  
+		//reflectanceSensors.read(sensorValues);
+		cout<<"New Values position "<<position<<endl;
+		for (int i = 0; i < NUM_SENSORS; i++){
+			cout<<sensorValues[i]<<endl;
+		}
+	}
+
+
+}
 
 void start();
 int main(int argc ,const char* args[])
 {
-  start();
+	test();
+  //start();
 	return 0;
 }
 
-
+/*
 void start(){
   string module_id="mobility_module";
   json module_info={
@@ -53,4 +96,4 @@ void start(){
   }
   HIGHLIGHT("Closing...");
   st.endConnection();
-}
+}*/
