@@ -41,14 +41,19 @@ class CommandInfo{
           return this->error;
       }
 };
-
+ 
 class Service{
+    typedef Service* (*crfnptr)(void);
+    typedef map<string, crfnptr> CreatorMap;
     string name;
     list<string> params;
     bool interruptible;
     bool service;
-    
+    static CreatorMap creators;
     public:
+        Service(){
+        }
+        
         Service(string name, list<string> params, bool interruptible, bool service){
             this->name = name;
             this->params = params;
@@ -57,6 +62,7 @@ class Service{
         }
         
         virtual void execute(json params) = 0;
+        
         string getName(){
             return this->name;
         }
@@ -71,7 +77,20 @@ class Service{
             info["SERVICE"] = this->service;
             return info;
         }
+        
+        static Service* createFromString(string name)
+        {
+          CreatorMap::const_iterator it = creators.find(name);
+          return it == creators.end() ? NULL : it->second();
+        }
+        
+        static void registerClass(string name, crfnptr f)
+        {
+            cout << "Clase " << name << " registrada" << endl;
+            creators[name] = f;
+        }
 };
+map<string, Service* (*)(void)> Service::creators = map<string, Service* (*)(void)>();
 
 class Services{
     map<long,queue<CommandInfo>> commandsInfo;
@@ -84,13 +103,13 @@ class Services{
       }
 
       bool assessWork(json command){
-         map<string, Service*>::iterator it = services.find(command["COMMAND"]);;
-          if(it != services.end()){
+        map<string, Service*>::iterator it = services.find(command["COMMAND"]);
+            if(it != services.end()){
               this->commandsInfo[command["GROUP_ID"]].push(CommandInfo(command));
               return true;
-          }else{
+            }else{
               return false;
-          }
+        }
       }
 
       CommandInfo getNextWork(long group_id){
