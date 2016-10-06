@@ -1,7 +1,10 @@
 
+#ifndef COMMUNICATION_H
+#define COMMUNICATION_H
+
 #include <sio_client.h>
 #include <json.hpp>
-#include <CommunicationEvents.cpp>
+
 
 #include <functional>
 #include <iostream>
@@ -11,6 +14,9 @@
 #include <string>
 #include <queue>
 #include <map>
+#include <CommunicationEvents.cpp>
+#include <Services.cpp>
+#include <thread>
 
 #ifdef WIN32
 
@@ -79,25 +85,43 @@ public:
 
 };
 
+void executeTask(socket::ptr socket, CommandInfo command, string module_id, Services* services){
+    cout << "EXECUTING TASK: " << command.getCommand() << endl;
+    json reply_info={
+                {"MODULE_ID",module_id},
+                {"STATUS","DONE"},//error
+                {"MSG",""}
+                //{"COMMAND_ID",dataJSON["COMMAND_ID"]}
+            };
+    string reply="";
+    reply_info["COMMAND_ID"]=command.getCommand()["COMMAND_ID"];
+    reply_info["GROUP_ID"]=command.getCommand()["GROUP_ID"];
+    if(!command.isError()){
+      reply_info["STATUS"]="DONE";
+    }else{
+        reply_info["STATUS"]="ERROR";
+    }
+    socket->emit(toString(CommunicationEvents::ACTION_FINISHED), reply_info.dump() );
+}
 
 class CommunicationChannel{
     sio::client h;
     connection_listener l;
     socket::ptr current_socket;
-    Services services;
+    Services* services;
     bool subscribed;
     string module_id;
     string url="";
 public:
 
 
-    CommunicationChannel(string host,int port,Services services):l(h){
-       this->subscribed=false;
+    CommunicationChannel(string host,int port,Services* services):l(h){
+        this->subscribed=false;
         this->url=host+":"+to_string(port);
         this->services=services;
     }
 
-    void start(){
+    void start(string module_info){
         h.set_open_listener(std::bind(&connection_listener::on_connected, &l));
         h.set_close_listener(std::bind(&connection_listener::on_close, &l,std::placeholders::_1));
         h.set_fail_listener(std::bind(&connection_listener::on_fail, &l));
@@ -110,9 +134,10 @@ public:
         l.getLock()->unlock();
         current_socket = h.socket();
         bind_events();
+        subscription(module_info);
     }
 
-   void subscription(string &module_info){
+    void subscription(string &module_info){
             current_socket->emit(toString(CommunicationEvents::REGISTRATION), module_info);
     }
 
@@ -131,48 +156,33 @@ public:
             }));
 			current_socket->on(toString(CommunicationEvents::WORK_ASSIGNATION), sio::socket::event_listener_aux([&](string const& name, message::ptr const& data, bool isAck,message::list &ack_resp){
                 l.getLock()->lock();
-        				json dataJSON=json::parse((data->get_string()));
+                json dataJSON=json::parse((data->get_string()));
                 EM("\t WORK-ASSING "<<dataJSON);
-        				json reply_info={
-        					  {"MODULE_ID",this->module_id},
-        					  {"REPLY","ACCEPTED"},
-                    {"COMMAND_ID",dataJSON["COMMAND_ID"]},
-                    {"GROUP_ID",dataJSON["GROUP_ID"]}
+                json reply_info={
+                            {"MODULE_ID",this->module_id},
+                            {"REPLY","ACCEPTED"},
+                            {"COMMAND_ID",dataJSON["COMMAND_ID"]},
+                            {"GROUP_ID",dataJSON["GROUP_ID"]}
                 };
-                if (!this->services.assessWork(dataJSON)){
+                if (!this->services->assessWork(dataJSON)){
                   reply_info["REPLY"]="REFUSE";
                 }
-        				current_socket->emit(toString(CommunicationEvents::WORK_ASSIGNATION_REPLY), reply_info.dump() );
-    		        l.getLock()->unlock();
+                
+                current_socket->emit(toString(CommunicationEvents::WORK_ASSIGNATION_REPLY), reply_info.dump() );
+                l.getLock()->unlock();
             }));
-      current_socket->on(toString(CommunicationEvents::ALL_BEGINS), sio::socket::event_listener_aux([&](string const& name, message::ptr const& data, bool isAck,message::list &ack_resp){
+
+            current_socket->on(toString(CommunicationEvents::ALL_BEGINS), sio::socket::event_listener_aux([&](string const& name, message::ptr const& data, bool isAck,message::list &ack_resp){
                 l.getLock()->lock();
                 json dataJSON=json::parse((data->get_string()));
                 EM("\t ALL-BEGINS "<<dataJSON);
-                json reply_info={
-                    {"MODULE_ID",this->module_id},
-                    {"STATUS","DONE"},//error
-                    {"MSG",""}
-                    //{"COMMAND_ID",dataJSON["COMMAND_ID"]}
-
-                };
-                string reply="";
-                this->services.setWorking(true);
-                while (!services.isEmptyCommands(dataJSON["GROUP_ID"])){
-                      //_lock.lock();
-                      CommandInfo command=services.makeWorkFront(dataJSON["GROUP_ID"]);
-                      reply_info["COMMAND_ID"]=command.getCommand()["COMMAND_ID"];
-                      reply_info["GROUP_ID"]=command.getCommand()["GROUP_ID"];
-                      if(!command.isError()){
-                        reply_info["STATUS"]="DONE";
-                      }else{
-                          reply_info["STATUS"]="ERROR";
-                      }
-                      current_socket->emit(toString(CommunicationEvents::ACTION_FINISHED), reply_info.dump() );
-                      //_lock.unlock();
+                this->services->setWorking(true);
+                while (!services->isEmptyCommands(dataJSON["GROUP_ID"])){
+                    cout << "INSTANCIANDO HILO" << endl;
+                    thread t1(executeTask, current_socket, this->services->getNextWork(dataJSON["GROUP_ID"]), this->module_id, this->services);
                 }
                 std::cout << "ACTION-FINISH" << std::endl;
-                this->services.setWorking(false);
+                this->services->setWorking(false);
                 l.getLock()->unlock();
             }));
             current_socket->on(toString(CommunicationEvents::WORK_STATUS), sio::socket::event_listener_aux([&](string const& name, message::ptr const& data, bool isAck,message::list &ack_resp){
@@ -186,7 +196,7 @@ public:
                           {"GROUP_ID",dataJSON["GROUP_ID"]},
                           {"MSG",""}
                       };
-                      if (!this->services.isWorking()){
+                      if (!this->services->isWorking()){
                         reply_info["STATUS"]="WORKING";
                       }
               				current_socket->emit(toString(CommunicationEvents::WORK_STATUS_REPLY), reply_info.dump() );
@@ -229,3 +239,5 @@ public:
     }
 
     };
+    
+#endif

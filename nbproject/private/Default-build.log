@@ -1,0 +1,35 @@
+Scanning dependencies of target sioclient
+[  8%] Building CXX object CMakeFiles/sioclient.dir/libs/socket.io/src/sio_socket.cpp.o
+[ 16%] Building CXX object CMakeFiles/sioclient.dir/libs/socket.io/src/sio_client.cpp.o
+[ 25%] Building CXX object CMakeFiles/sioclient.dir/libs/socket.io/src/internal/sio_packet.cpp.o
+[ 33%] Building CXX object CMakeFiles/sioclient.dir/libs/socket.io/src/internal/sio_client_impl.cpp.o
+[ 41%] Linking CXX static library libsioclient.a
+[ 41%] Built target sioclient
+Scanning dependencies of target mobility_module
+[ 50%] Building CXX object CMakeFiles/mobility_module.dir/main.cpp.o
+In file included from /home/tg1604/Documentos/thesis/mobility-module/main.cpp:1:0:
+/home/tg1604/Documentos/thesis/mobility-module/libs/AIO/Module.cpp:44:9: error: ‘String’ was not declared in this scope
+     map<String, Service> services;    
+         ^
+/home/tg1604/Documentos/thesis/mobility-module/libs/AIO/Module.cpp:44:17: error: ‘Service’ was not declared in this scope
+     map<String, Service> services;    
+                 ^
+/home/tg1604/Documentos/thesis/mobility-module/libs/AIO/Module.cpp:44:24: error: template argument 1 is invalid
+     map<String, Service> services;    
+                        ^
+/home/tg1604/Documentos/thesis/mobility-module/libs/AIO/Module.cpp:44:24: error: template argument 2 is invalid
+/home/tg1604/Documentos/thesis/mobility-module/libs/AIO/Module.cpp:44:24: error: template argument 3 is invalid
+/home/tg1604/Documentos/thesis/mobility-module/libs/AIO/Module.cpp:44:24: error: template argument 4 is invalid
+/home/tg1604/Documentos/thesis/mobility-module/libs/AIO/Module.cpp: In member function ‘bool Services::assessWork(json)’:
+/home/tg1604/Documentos/thesis/mobility-module/libs/AIO/Module.cpp:54:11: error: expected unqualified-id before ‘if’
+           if (command["COMMAND"]=="BLINK") {
+           ^
+/home/tg1604/Documentos/thesis/mobility-module/libs/AIO/Module.cpp:57:12: error: ‘else’ without a previous ‘if’
+           }else if (command["COMMAND"]=="DECIR") {
+            ^
+CMakeFiles/mobility_module.dir/build.make:62: fallo en las instrucciones para el objetivo 'CMakeFiles/mobility_module.dir/main.cpp.o'
+make[2]: *** [CMakeFiles/mobility_module.dir/main.cpp.o] Error 1
+CMakeFiles/Makefile2:104: fallo en las instrucciones para el objetivo 'CMakeFiles/mobility_module.dir/all'
+make[1]: *** [CMakeFiles/mobility_module.dir/all] Error 2
+Makefile:127: fallo en las instrucciones para el objetivo 'all'
+make: *** [all] Error 2

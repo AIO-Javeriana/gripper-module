@@ -1,4 +1,5 @@
 
+using namespace std;
 
 enum CommunicationEvents
 {
@@ -23,34 +24,6 @@ enum CommunicationEvents
     COMMANDS_ASSIGNATION,
     NOT_DEFINED
 };
-
-std::ostream& operator<<(std::ostream& os, CommunicationEvents c)
-{
-    switch(c)
-    {
-      case REGISTRATION: os << ("REGISTRATION");    break;
-      case REGISTRATION_REPLY: os <<("REGISTRATION_REPLY");    break;
-      case WORK_ASSIGNATION: os <<("WORK_ASSIGNATION");    break;
-      case WORK_ASSIGNATION_REPLY: os <<("WORK_ASSIGNATION-REPLY");    break;
-      case WORK_STATUS: os <<("WORK_STATUS");    break;
-      case WORK_STATUS_REPLY: os <<("WORK_STATUS-REPLY");    break;
-      case ALL_BEGINS: os <<("ALL_BEGINS");    break;
-      case ACTION_FINISHED: os <<("ACTION_FINISHED");    break;
-      case GET_SENSOR_SERVICES: os <<("GET_SENSOR-SERVICES");    break;
-      case SUBSCRIPTION_SENSOR_SERVICE: os <<("SUBSCRIPTION_SENSOR-SERVICE");    break;
-      case SENSOR_SERVICE: os <<("SENSOR_SERVICE");    break;
-      case EMOTIONAL_EVENT: os <<("EMOTIONAL_EVENT");    break;
-      case PARTICIPATION_EVENT: os <<("PARTICIPATION_EVENT");    break;
-      case SUBSCRIPTION_SENSOR_SERVICE_REPLY: os <<("SUBSCRIPTION_SENSOR-SERVICE-REPLY");    break;
-      case NECESSITY_FOR_MODULE: os <<("NECESSITY_FOR-MODULE");    break;
-      case FINISHED_EXECUTE_COMMAND: os <<("FINISHED_EXECUTE_COMMAND");    break;
-      case SENSOR_SERVICE_REPLY: os <<("SENSOR_SERVICE_REPLY");    break;
-      case GET_SENSOR_SERVICES_REPLY: os <<("GET_SENSOR_SERVICES-REPLY");    break;
-      case COMMANDS_ASSIGNATION: os <<("COMMANDS_ASSIGNATION");    break;
-      default : os << "NOT_DEFINED";  break;
-    }
-    return os;
-}
 
 string toString(CommunicationEvents c)
 {

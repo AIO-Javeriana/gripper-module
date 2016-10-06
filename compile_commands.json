@@ -1,0 +1,47 @@
+[
+{
+  "directory": "/home/tg1604/Documentos/thesis/mobility-module",
+  "command": "/usr/bin/g++    -I/home/tg1604/Documentos/thesis/mobility-module/libs/socket.io/src -I/home/tg1604/Documentos/thesis/mobility-module/libs/socket.io/lib/websocketpp -I/home/tg1604/Documentos/thesis/mobility-module/libs/socket.io/lib/rapidjson/include -I/home/tg1604/Documentos/thesis/mobility-module/libs/AIO -I/home/tg1604/Documentos/thesis/mobility-module/libs/MobilityModule  -g3 -gdwarf-2   -std=gnu++11 -o CMakeFiles/sioclient.dir/libs/socket.io/src/sio_socket.cpp.o -c /home/tg1604/Documentos/thesis/mobility-module/libs/socket.io/src/sio_socket.cpp",
+  "file": "/home/tg1604/Documentos/thesis/mobility-module/libs/socket.io/src/sio_socket.cpp"
+},
+{
+  "directory": "/home/tg1604/Documentos/thesis/mobility-module",
+  "command": "/usr/bin/g++    -I/home/tg1604/Documentos/thesis/mobility-module/libs/socket.io/src -I/home/tg1604/Documentos/thesis/mobility-module/libs/socket.io/lib/websocketpp -I/home/tg1604/Documentos/thesis/mobility-module/libs/socket.io/lib/rapidjson/include -I/home/tg1604/Documentos/thesis/mobility-module/libs/AIO -I/home/tg1604/Documentos/thesis/mobility-module/libs/MobilityModule  -g3 -gdwarf-2   -std=gnu++11 -o CMakeFiles/sioclient.dir/libs/socket.io/src/sio_client.cpp.o -c /home/tg1604/Documentos/thesis/mobility-module/libs/socket.io/src/sio_client.cpp",
+  "file": "/home/tg1604/Documentos/thesis/mobility-module/libs/socket.io/src/sio_client.cpp"
+},
+{
+  "directory": "/home/tg1604/Documentos/thesis/mobility-module",
+  "command": "/usr/bin/g++    -I/home/tg1604/Documentos/thesis/mobility-module/libs/socket.io/src -I/home/tg1604/Documentos/thesis/mobility-module/libs/socket.io/lib/websocketpp -I/home/tg1604/Documentos/thesis/mobility-module/libs/socket.io/lib/rapidjson/include -I/home/tg1604/Documentos/thesis/mobility-module/libs/AIO -I/home/tg1604/Documentos/thesis/mobility-module/libs/MobilityModule  -g3 -gdwarf-2   -std=gnu++11 -o CMakeFiles/sioclient.dir/libs/socket.io/src/internal/sio_packet.cpp.o -c /home/tg1604/Documentos/thesis/mobility-module/libs/socket.io/src/internal/sio_packet.cpp",
+  "file": "/home/tg1604/Documentos/thesis/mobility-module/libs/socket.io/src/internal/sio_packet.cpp"
+},
+{
+  "directory": "/home/tg1604/Documentos/thesis/mobility-module",
+  "command": "/usr/bin/g++    -I/home/tg1604/Documentos/thesis/mobility-module/libs/socket.io/src -I/home/tg1604/Documentos/thesis/mobility-module/libs/socket.io/lib/websocketpp -I/home/tg1604/Documentos/thesis/mobility-module/libs/socket.io/lib/rapidjson/include -I/home/tg1604/Documentos/thesis/mobility-module/libs/AIO -I/home/tg1604/Documentos/thesis/mobility-module/libs/MobilityModule  -g3 -gdwarf-2   -std=gnu++11 -o CMakeFiles/sioclient.dir/libs/socket.io/src/internal/sio_client_impl.cpp.o -c /home/tg1604/Documentos/thesis/mobility-module/libs/socket.io/src/internal/sio_client_impl.cpp",
+  "file": "/home/tg1604/Documentos/thesis/mobility-module/libs/socket.io/src/internal/sio_client_impl.cpp"
+},
+{
+  "directory": "/home/tg1604/Documentos/thesis/mobility-module",
+  "command": "/usr/bin/g++    -I/home/tg1604/Documentos/thesis/mobility-module/libs/socket.io/src -I/home/tg1604/Documentos/thesis/mobility-module/libs/AIO -I/home/tg1604/Documentos/thesis/mobility-module/libs/MobilityModule  -g3 -gdwarf-2   -std=gnu++11 -o CMakeFiles/mobility_module.dir/main.cpp.o -c /home/tg1604/Documentos/thesis/mobility-module/main.cpp",
+  "file": "/home/tg1604/Documentos/thesis/mobility-module/main.cpp"
+},
+{
+  "directory": "/home/tg1604/Documentos/thesis/mobility-module",
+  "command": "/usr/bin/g++   -DSIO_TLS -I/home/tg1604/Documentos/thesis/mobility-module/libs/socket.io/src -I/home/tg1604/Documentos/thesis/mobility-module/libs/socket.io/lib/websocketpp -I/home/tg1604/Documentos/thesis/mobility-module/libs/socket.io/lib/rapidjson/include -I/home/tg1604/Documentos/thesis/mobility-module/libs/AIO -I/home/tg1604/Documentos/thesis/mobility-module/libs/MobilityModule  -g3 -gdwarf-2   -std=gnu++11 -o CMakeFiles/sioclient_tls.dir/libs/socket.io/src/sio_socket.cpp.o -c /home/tg1604/Documentos/thesis/mobility-module/libs/socket.io/src/sio_socket.cpp",
+  "file": "/home/tg1604/Documentos/thesis/mobility-module/libs/socket.io/src/sio_socket.cpp"
+},
+{
+  "directory": "/home/tg1604/Documentos/thesis/mobility-module",
+  "command": "/usr/bin/g++   -DSIO_TLS -I/home/tg1604/Documentos/thesis/mobility-module/libs/socket.io/src -I/home/tg1604/Documentos/thesis/mobility-module/libs/socket.io/lib/websocketpp -I/home/tg1604/Documentos/thesis/mobility-module/libs/socket.io/lib/rapidjson/include -I/home/tg1604/Documentos/thesis/mobility-module/libs/AIO -I/home/tg1604/Documentos/thesis/mobility-module/libs/MobilityModule  -g3 -gdwarf-2   -std=gnu++11 -o CMakeFiles/sioclient_tls.dir/libs/socket.io/src/sio_client.cpp.o -c /home/tg1604/Documentos/thesis/mobility-module/libs/socket.io/src/sio_client.cpp",
+  "file": "/home/tg1604/Documentos/thesis/mobility-module/libs/socket.io/src/sio_client.cpp"
+},
+{
+  "directory": "/home/tg1604/Documentos/thesis/mobility-module",
+  "command": "/usr/bin/g++   -DSIO_TLS -I/home/tg1604/Documentos/thesis/mobility-module/libs/socket.io/src -I/home/tg1604/Documentos/thesis/mobility-module/libs/socket.io/lib/websocketpp -I/home/tg1604/Documentos/thesis/mobility-module/libs/socket.io/lib/rapidjson/include -I/home/tg1604/Documentos/thesis/mobility-module/libs/AIO -I/home/tg1604/Documentos/thesis/mobility-module/libs/MobilityModule  -g3 -gdwarf-2   -std=gnu++11 -o CMakeFiles/sioclient_tls.dir/libs/socket.io/src/internal/sio_packet.cpp.o -c /home/tg1604/Documentos/thesis/mobility-module/libs/socket.io/src/internal/sio_packet.cpp",
+  "file": "/home/tg1604/Documentos/thesis/mobility-module/libs/socket.io/src/internal/sio_packet.cpp"
+},
+{
+  "directory": "/home/tg1604/Documentos/thesis/mobility-module",
+  "command": "/usr/bin/g++   -DSIO_TLS -I/home/tg1604/Documentos/thesis/mobility-module/libs/socket.io/src -I/home/tg1604/Documentos/thesis/mobility-module/libs/socket.io/lib/websocketpp -I/home/tg1604/Documentos/thesis/mobility-module/libs/socket.io/lib/rapidjson/include -I/home/tg1604/Documentos/thesis/mobility-module/libs/AIO -I/home/tg1604/Documentos/thesis/mobility-module/libs/MobilityModule  -g3 -gdwarf-2   -std=gnu++11 -o CMakeFiles/sioclient_tls.dir/libs/socket.io/src/internal/sio_client_impl.cpp.o -c /home/tg1604/Documentos/thesis/mobility-module/libs/socket.io/src/internal/sio_client_impl.cpp",
+  "file": "/home/tg1604/Documentos/thesis/mobility-module/libs/socket.io/src/internal/sio_client_impl.cpp"
+}
+]
