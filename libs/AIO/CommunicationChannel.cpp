@@ -112,6 +112,7 @@ class CommunicationChannel{
     bool subscribed;
     string module_id;
     string url="";
+    static thread* t;
 public:
 
 
@@ -175,14 +176,7 @@ public:
             current_socket->on(toString(CommunicationEvents::ALL_BEGINS), sio::socket::event_listener_aux([&](string const& name, message::ptr const& data, bool isAck,message::list &ack_resp){
                 l.getLock()->lock();
                 json dataJSON=json::parse((data->get_string()));
-                EM("\t ALL-BEGINS "<<dataJSON);
-                this->services->setWorking(true);
-                while (!services->isEmptyCommands(dataJSON["GROUP_ID"])){
-                    cout << "INSTANCIANDO HILO" << endl;
-                    thread t1(executeTask, current_socket, this->services->getNextWork(dataJSON["GROUP_ID"]), this->module_id, this->services);
-                }
-                std::cout << "ACTION-FINISH" << std::endl;
-                this->services->setWorking(false);
+                t = new thread(all_begins, this->services,dataJSON, getLock(), this->current_socket);
                 l.getLock()->unlock();
             }));
             current_socket->on(toString(CommunicationEvents::WORK_STATUS), sio::socket::event_listener_aux([&](string const& name, message::ptr const& data, bool isAck,message::list &ack_resp){
@@ -228,7 +222,42 @@ public:
     std::mutex* getLock(){
       return this->l.getLock();
     }
-
+    
+    static void all_begins(Services* services, json dataJSON, mutex* lock, socket::ptr socket){
+        EM("\t ALL-BEGINS "<<dataJSON);
+        services->setWorking(true);
+        long group_id = dataJSON["GROUP_ID"];
+        while (!services->isEmptyCommands(group_id)){
+            CommandInfo commandInfo = services->getNextWork(group_id);
+            t = new thread(consumeService, commandInfo, lock, socket);
+        }
+        services->setWorking(false);
+    }
+    
+    static void consumeService(CommandInfo commandInfo, mutex* lock, socket::ptr socket){
+        json command = commandInfo.getCommand();
+        Service* responsible = Service::createFromString(command["COMMAND"]);
+        if(responsible != NULL){
+            bool result = responsible->execute(command["PARAMS"]);
+            if(result == true){
+                json reply_info={
+                    {"MODULE_ID","mobility_module"},
+                    {"STATUS","DONE"},
+                    {"MSG",""},
+                    {"COMMAND_ID",command["COMMAND_ID"]}
+                };
+                cout << "ACTION-FINISH" << endl;
+                lock->lock();
+                socket->emit(toString(CommunicationEvents::ACTION_FINISHED), reply_info.dump() );
+                lock->unlock();
+            }else{
+                // Mandar error
+            }
+        }else{
+            // Mandar error
+        }
+    }
+    
     ~CommunicationChannel(){
       cout<<"Destructor CommunicationChannel"<<endl;
       current_socket->off_all();
@@ -238,6 +267,6 @@ public:
       //delete h;
     }
 
-    };
-    
+};
+thread* CommunicationChannel::t = NULL;
 #endif

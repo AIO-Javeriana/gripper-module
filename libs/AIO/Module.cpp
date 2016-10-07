@@ -3,7 +3,6 @@
 
 #include <json.hpp>
 #include <string>
-
 #include <CommunicationChannel.cpp>
 
 using json = nlohmann::json;

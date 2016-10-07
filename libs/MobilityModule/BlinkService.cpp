@@ -11,13 +11,14 @@ public:
     
     BlinkService(string name, list<string> params, bool interruptible, bool service) :
         Service(name, params, interruptible, service) {
-        Service::registerClass("BlinkService", &BlinkService::create);
+        Service::registerClass(name, &BlinkService::create);
     }
     static Service* create() { 
         return new BlinkService; 
     }
     
-    void execute(json params){
+    bool execute(json params){
         HIGHLIGHT("Blink");
+        return true;
     }
 };

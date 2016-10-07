@@ -14,13 +14,12 @@ class CommandInfo{
     json command;
     bool completed;
     bool error;
-
+    
   public:
       CommandInfo(json command){
         this->command=command;
         this->completed=false;
         this->error=false;
-
       }
       void setCommand(json command){
         this->command=command;
@@ -61,7 +60,7 @@ class Service{
             this->service = service;
         }
         
-        virtual void execute(json params) = 0;
+        virtual bool execute(json params) = 0;
         
         string getName(){
             return this->name;
@@ -94,7 +93,7 @@ map<string, Service* (*)(void)> Service::creators = map<string, Service* (*)(voi
 
 class Services{
     map<long,queue<CommandInfo>> commandsInfo;
-    map<string, Service*> services;    
+    map<string, Service*> services;  
     bool working;
 
   public:
