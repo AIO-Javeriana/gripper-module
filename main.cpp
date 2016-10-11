@@ -6,13 +6,13 @@
 #include <stdio.h>
 #include <MobilityModule.cpp>
 #include <BlinkService.cpp>
-
+#include <TellService.cpp>
+#include <MoveService.cpp>
 //#include <wiringPi.h>
 
 
 //#include <ZumoReflectanceSensorArray.h>
 
-//using json = nlohmann::json;
 using namespace std;
 
 void start();
@@ -30,6 +30,10 @@ void start(){
   list<string> params;
   BlinkService* service = new BlinkService("BLINK", params, false, false);
   mobilityModule->addService(service);
+  TellService* tellService = new TellService("DECIR", params, false, false);
+  mobilityModule->addService(tellService);
+  MoveService* moveService = new MoveService("MOVER", params, false, false);
+  mobilityModule->addService(moveService);
   mobilityModule->start();
   while(true);
 }

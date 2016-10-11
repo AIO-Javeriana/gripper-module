@@ -88,6 +88,8 @@
         <df name="MobilityModule">
           <in>BlinkService.cpp</in>
           <in>MobilityModule.cpp</in>
+          <in>MoveService.cpp</in>
+          <in>TellService.cpp</in>
         </df>
         <df name="socket.io">
           <df name="lib">
