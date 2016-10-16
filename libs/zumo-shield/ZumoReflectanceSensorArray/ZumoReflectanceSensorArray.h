@@ -78,7 +78,7 @@
 #include <../QTRSensors/QTRSensors.h>
 #include <wiringPi.h>
 
-#define ZUMO_SENSOR_ARRAY_DEFAULT_EMITTER_PIN  26
+#define ZUMO_SENSOR_ARRAY_DEFAULT_EMITTER_PIN  24
 
 class ZumoReflectanceSensorArray : public QTRSensorsRC
 {
@@ -143,7 +143,7 @@ class ZumoReflectanceSensorArray : public QTRSensorsRC
    */
   void init(unsigned char emitterPin = ZUMO_SENSOR_ARRAY_DEFAULT_EMITTER_PIN)
   {
-    unsigned char sensorPins[] = { 1,4,5,6,10,11 };
+    unsigned char sensorPins[] = { 0,6,2,11,10,13 };
     QTRSensorsRC::init(sensorPins, sizeof(sensorPins), 2000, emitterPin);
   }
 

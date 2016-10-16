@@ -13,13 +13,56 @@
 //using json = nlohmann::json;
 using namespace std;
 
-#define	LED	26
+
+string  PWM_PATH= "/sys/devices/platform/pwm-ctrl/";
+#define	LED	24
 #define NUM_SENSORS 6
+#define PORT_ADC1 0
+#define M1DIR 3
+#define M2DIR 21
+void testADC(){
+
+	int data;
+	while(1){
+	data=analogRead(PORT_ADC1);
+		cout<<" DATA "<<data<<endl;
+		
+	}
+
+
+}
+
+
+void execute(string s){
+	int r=system(s.c_str());
+}
+
+void wheelsInitialization (){
+	pinMode (M1DIR, OUTPUT) ;
+	pinMode (M2DIR, OUTPUT) ;
+	digitalWrite (M1DIR, LOW) ;	// On
+	digitalWrite (M2DIR, LOW) ;	// On
+	cout<<"Strared Gripper Module"<<PWM_PATH<<endl;
+	execute("sudo modprobe pwm-meson npwm=2");
+	execute("sudo modprobe pwm-ctrl");
+	int freq=20000;
+	int duty=800;
+	int enbale=0;
+	execute("echo "+to_string(duty)+" > "+PWM_PATH+"duty"+to_string(0));
+	execute("echo "+to_string(freq)+" > "+PWM_PATH+"freq"+to_string(0));
+	execute("echo "+to_string(enbale)+" > "+PWM_PATH+"enable"+to_string(0));
+	execute("echo "+to_string(duty)+" > "+PWM_PATH+"duty"+to_string(1));
+	execute("echo "+to_string(freq)+" > "+PWM_PATH+"freq"+to_string(1));
+	execute("echo "+to_string(enbale)+" > "+PWM_PATH+"enable"+to_string(1));
+	
+}
+
 void test(){
 
   printf ("ZumoReflectanceSensorArray\n") ;
-
+	
   wiringPiSetup () ;
+  wheelsInitialization ();
   pinMode (LED, OUTPUT) ;
   ZumoReflectanceSensorArray reflectanceSensors;
   unsigned int sensorValues[NUM_SENSORS];
@@ -49,9 +92,11 @@ void test(){
 
 }
 
+
 void start();
 int main(int argc ,const char* args[])
 {
+	cout<<"Strated Module Moblitity"<<endl;
 	test();
   //start();
 	return 0;
