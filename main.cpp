@@ -6,16 +6,18 @@
 //-----------------------
 #include <stdio.h>
 #include <wiringPi.h>
+#include <wiringPiI2C.h>
 
 
 #include <ZumoReflectanceSensorArray.h>
 #include <ZumoMotors.h>
+#include <LSM303.h>
 
 //using json = nlohmann::json;
 using namespace std;
 
 #define	LED	24
-#define NUM_SENSORS 5
+#define NUM_SENSORS 4
 #define PORT_ADC1 0
 #define M1DIR 3
 #define M2DIR 21
@@ -103,12 +105,12 @@ void setup(ZumoReflectanceSensorArray reflectanceSensors)
   // by rotating in place to sweep the sensors over the line
   delay(1000);
   int i;
-  for(i = 0; i < 80; i++)
+  for(i = 0; i < 100; i++)
   {
     if ((i > 10 && i <= 30) || (i > 50 && i <= 70))
-      ZumoMotors::setSpeeds(-200, 200);
+      ZumoMotors::setSpeeds(-100, 100);
     else
-      ZumoMotors::setSpeeds(200, -200);
+      ZumoMotors::setSpeeds(100, -100);
     reflectanceSensors.calibrate();
 
     // Since our counter runs to 80, the total delay will be
@@ -140,9 +142,9 @@ void test(){
   printf ("ZumoReflectanceSensorArray\n") ;
   ZumoReflectanceSensorArray reflectanceSensors;
   ZumoMotors::init(); 
-  delay(2000); 
-  ZumoMotors::setSpeeds(100, 100);
-  //setup(reflectanceSensors);
+  //delay(2000); 
+  //ZumoMotors::setSpeeds(100, 100);
+  setup(reflectanceSensors);
 
 }
 
@@ -152,6 +154,7 @@ int main(int argc ,const char* args[])
 {
 	cout<<"Strated Module Moblitity"<<endl;
 	test();
+	int16_t a;
   //start();
 	return 0;
 }
