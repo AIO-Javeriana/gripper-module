@@ -224,11 +224,12 @@ public:
     }
     
     static void all_begins(Services* services, json dataJSON, mutex* lock, socket::ptr socket){
-        EM("\t ALL-BEGINS "<<dataJSON);
+        EM("\t ALL-BEGINS ---> "<<dataJSON);
         services->setWorking(true);
         long group_id = dataJSON["GROUP_ID"];
         while (!services->isEmptyCommands(group_id)){
             CommandInfo commandInfo = services->getNextWork(group_id);
+            EM(commandInfo.getCommand());
             t = new thread(consumeService, commandInfo, lock, socket);
         }
         services->setWorking(false);
@@ -237,22 +238,31 @@ public:
     static void consumeService(CommandInfo commandInfo, mutex* lock, socket::ptr socket){
         json command = commandInfo.getCommand();
         Service* responsible = Service::createFromString(command["COMMAND"]);
+        string msg = "";
         if(responsible != NULL){
-            bool result = responsible->execute(command["PARAMS"]);
+            bool result = responsible->execute(command["PARAMS"], command["MODULATION_VALUE"], msg);
+            json reply_info = {};
             if(result == true){
-                json reply_info={
+                reply_info={
                     {"MODULE_ID","mobility_module"},
                     {"STATUS","DONE"},
-                    {"MSG",""},
+                    {"ERROR_MESSAGE",""},
+                    {"FINISH_MESSAGE",msg},
                     {"COMMAND_ID",command["COMMAND_ID"]}
                 };
-                cout << "ACTION-FINISH" << endl;
-                lock->lock();
-                socket->emit(toString(CommunicationEvents::ACTION_FINISHED), reply_info.dump() );
-                lock->unlock();
             }else{
-                // Mandar error
+                reply_info={
+                    {"MODULE_ID","mobility_module"},
+                    {"STATUS","DONE"},
+                    {"ERROR_MESSAGE",msg},
+                    {"FINISH_MESSAGE",""},
+                    {"COMMAND_ID",command["COMMAND_ID"]}
+                };
             }
+            cout << "ACTION-FINISH" << endl;
+            lock->lock();
+            socket->emit(toString(CommunicationEvents::ACTION_FINISHED), reply_info.dump() );
+            lock->unlock();
         }else{
             // Mandar error
         }
