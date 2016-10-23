@@ -143,8 +143,8 @@ class ZumoReflectanceSensorArray : public QTRSensorsRC
    */
   void init(unsigned char emitterPin = ZUMO_SENSOR_ARRAY_DEFAULT_EMITTER_PIN)
   {
-    //unsigned char sensorPins[] = { 0,10,2,11,6,13 };
-    unsigned char sensorPins[] = { 0,10,6,13 };
+    unsigned char sensorPins[] = { 0,10,2,1,6,13 };
+    //unsigned char sensorPins[] = { 0,10,6,13 };
     QTRSensorsRC::init(sensorPins, sizeof(sensorPins), 2000, emitterPin);
   }
 

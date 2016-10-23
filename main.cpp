@@ -17,7 +17,7 @@
 using namespace std;
 
 #define	LED	24
-#define NUM_SENSORS 4
+#define NUM_SENSORS 6
 #define PORT_ADC1 0
 #define M1DIR 3
 #define M2DIR 21
@@ -135,6 +135,34 @@ void setup(ZumoReflectanceSensorArray reflectanceSensors)
   }
 }
 
+void testReflectanceSensorArray(ZumoReflectanceSensorArray reflectanceSensors){
+
+  pinMode (LED, OUTPUT) ;
+  unsigned int sensorValues[NUM_SENSORS];
+  reflectanceSensors.init();
+  digitalWrite (LED, HIGH) ;	// On
+  unsigned long startTime = millis();
+  while(millis() - startTime < 10000)   // make the calibration take 10 seconds
+  {
+    reflectanceSensors.calibrate();
+  }
+  digitalWrite (LED, LOW) ;	// Off
+
+
+
+  for (;;){
+   // delay (500) ;		// mS
+   // delay (500) ;
+		unsigned int position = reflectanceSensors.readLine(sensorValues);
+		// To get raw sensor values instead, call:  
+		//reflectanceSensors.read(sensorValues);
+		cout<<"New Values position "<<position<<endl;
+		for (int i = 0; i < NUM_SENSORS; i++){
+			cout<<sensorValues[i]<<endl;
+		}
+	}
+
+}
 
 void test(){
 
@@ -142,6 +170,7 @@ void test(){
   printf ("ZumoReflectanceSensorArray\n") ;
   ZumoReflectanceSensorArray reflectanceSensors;
   ZumoMotors::init(); 
+  //testReflectanceSensorArray(reflectanceSensors);
   //delay(2000); 
   //ZumoMotors::setSpeeds(100, 100);
   setup(reflectanceSensors);
@@ -154,7 +183,7 @@ int main(int argc ,const char* args[])
 {
 	cout<<"Strated Module Moblitity"<<endl;
 	test();
-	int16_t a;
+	//hoint16_t a;
   //start();
 	return 0;
 }
