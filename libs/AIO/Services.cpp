@@ -6,6 +6,8 @@
 #include <queue>
 #include <map>
 #include <list>
+#include <Module.cpp>
+
 
 using json = nlohmann::json;
 using namespace std;
@@ -42,15 +44,18 @@ class CommandInfo{
 };
  
 class Service{
-    typedef Service* (*crfnptr)(void);
-    typedef map<string, crfnptr> CreatorMap;
-    string name;
-    list<string> params;
-    bool interruptible;
-    bool service;
-    static CreatorMap creators;
+    protected:
+        typedef Service* (*crfnptr)(void);
+        typedef map<string, crfnptr> CreatorMap;
+        string name;
+        list<string> params;
+        bool interruptible;
+        bool service;
+        static CreatorMap creators;
     public:
         Service(){
+            
+            
         }
         
         Service(string name, list<string> params, bool interruptible, bool service){
@@ -60,7 +65,7 @@ class Service{
             this->service = service;
         }
         
-        virtual bool execute(json params, double modulationValue, string &msg) = 0;
+        virtual bool execute(json params, double modulationValue, string &msg, Module* module) = 0;
         
         string getName(){
             return this->name;

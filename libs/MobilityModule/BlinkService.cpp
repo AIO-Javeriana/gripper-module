@@ -1,3 +1,5 @@
+#ifndef BLINKSERVICE_H
+#define BLINKSERVICE_H
 
 #include <Services.cpp>
 #ifdef WIN32
@@ -29,10 +31,12 @@ public:
         return new BlinkService; 
     }
     
-    bool execute(json params, double modulationValue, string &msg){
+    bool execute(json params, double modulationValue, string &msg,Module *module){
         HIGHLIGHT("BLINK: ");
         cout << modulationValue << endl;
         msg = "TERMINEE";
         return true;
     }
 };
+
+#endif

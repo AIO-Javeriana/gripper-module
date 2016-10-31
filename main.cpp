@@ -27,6 +27,7 @@ int main(int argc ,const char* args[])
 void start(){
   string module_id="mobility_module";
   MobilityModule* mobilityModule = new MobilityModule(module_id, "ws://localhost", 9090);
+  /*
   list<string> params;
   BlinkService* service = new BlinkService("BLINK", params, false, false);
   mobilityModule->addService(service);
@@ -35,5 +36,6 @@ void start(){
   MoveService* moveService = new MoveService("MOVER", params, false, false);
   mobilityModule->addService(moveService);
   mobilityModule->start();
+  */
   while(true);
 }

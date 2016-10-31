@@ -1,4 +1,8 @@
 
+
+#ifndef TELLSERVICE
+#define TELLSERVICE  
+
 #include <Services.cpp>
 #ifdef WIN32
 
@@ -29,10 +33,12 @@ public:
         return new TellService; 
     }
     
-    bool execute(json params, double modulationValue, string &msg){
+    bool execute(json params, double modulationValue, string &msg,Module *module){
         HIGHLIGHT(params["TEXTO"]);
         cout << modulationValue << endl;
         msg = "TERMINEE";
         return true;
     }
 };
+
+#endif

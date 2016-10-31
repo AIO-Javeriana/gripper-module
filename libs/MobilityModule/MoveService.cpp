@@ -1,4 +1,7 @@
 
+#ifndef MOVESERVICE_H
+#define MOVESERVICE_H 
+        
 #include <Services.cpp>
 #ifdef WIN32
 
@@ -29,10 +32,11 @@ public:
         return new MoveService; 
     }
     
-    bool execute(json params, double modulationValue, string &msg){
+    bool execute(json params, double modulationValue, string &msg,Module *module){
         HIGHLIGHT("Move");
         cout << modulationValue << endl;
         msg = "ADELANTE";
         return true;
     }
 };
+#endif

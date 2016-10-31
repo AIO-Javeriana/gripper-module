@@ -1,11 +1,16 @@
 
+#ifndef MOBILITYMODULE_H
+#define MOBILITYMODULE_H 
+
 #include <Module.cpp>
 
 class MobilityModule: public Module{
 
     public:
-        MobilityModule(string ID, string host, int port) :
-            Module(ID, host, port) {
+        MobilityModule(std::string module_id, std::string host, int port) :
+            Module(module_id, host, port) {
         }
 
 };
+
+#endif

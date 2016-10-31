@@ -15,7 +15,10 @@
 #include <queue>
 #include <map>
 #include <CommunicationEvents.cpp>
+#include <Module.cpp>
 #include <Services.cpp>
+
+
 #include <thread>
 
 #ifdef WIN32
@@ -110,13 +113,15 @@ class CommunicationChannel{
     socket::ptr current_socket;
     Services* services;
     bool subscribed;
-    string module_id;
+    //string module_id;
     string url="";
+    Module* module;
     static thread* t;
 public:
 
 
-    CommunicationChannel(string host,int port,Services* services):l(h){
+    CommunicationChannel(string host,int port,Services* services,Module* module):l(h){
+        this->module=module;
         this->subscribed=false;
         this->url=host+":"+to_string(port);
         this->services=services;
@@ -143,24 +148,25 @@ public:
     }
 
     void bind_events(){
-		   current_socket->on(toString(CommunicationEvents::REGISTRATION_REPLY), sio::socket::event_listener_aux([&](string const& name, message::ptr const& data, bool isAck,message::list &ack_resp){
-                l.getLock()->lock();
-        				json dataJSON=json::parse((data->get_string()));
-        				this->module_id=dataJSON["MODULE_ID"];
-                        HIGHLIGHT("MODULE SUBSCRIBED \n ID "<<this->module_id);//;
+            current_socket->on(toString(CommunicationEvents::REGISTRATION_REPLY), sio::socket::event_listener_aux([&](string const& name, message::ptr const& data, bool isAck,message::list &ack_resp){
+                        l.getLock()->lock();
+                        json dataJSON=json::parse((data->get_string()));
+                        //this->module->setModule_id(dataJSON["MODULE_ID"]);
+                        HIGHLIGHT("MODULE SUBSCRIBED \n ID "/*<<this->module->getModule_id()*/);
         				// EM(user<<":"<<message);
-        				this->subscribed=true;
+                        this->subscribed=true;
 
-        				l.getCond()->notify_all();
-                l.getLock()->unlock();
-                current_socket->off("login");
+                        l.getCond()->notify_all();
+                        l.getLock()->unlock();
+                        current_socket->off("login");
             }));
-			current_socket->on(toString(CommunicationEvents::WORK_ASSIGNATION), sio::socket::event_listener_aux([&](string const& name, message::ptr const& data, bool isAck,message::list &ack_resp){
+            current_socket->on(toString(CommunicationEvents::WORK_ASSIGNATION), sio::socket::event_listener_aux([&](string const& name, message::ptr const& data, bool isAck,message::list &ack_resp){
                 l.getLock()->lock();
                 json dataJSON=json::parse((data->get_string()));
                 EM("\t WORK-ASSING "<<dataJSON);
                 json reply_info={
-                            {"MODULE_ID",this->module_id},
+                            //{"MODULE_ID",this->module->getModule_id()},
+                            {"MODULE_ID",""},
                             {"REPLY","ACCEPTED"},
                             {"COMMAND_ID",dataJSON["COMMAND_ID"]},
                             {"GROUP_ID",dataJSON["GROUP_ID"]}
@@ -176,7 +182,7 @@ public:
             current_socket->on(toString(CommunicationEvents::ALL_BEGINS), sio::socket::event_listener_aux([&](string const& name, message::ptr const& data, bool isAck,message::list &ack_resp){
                 l.getLock()->lock();
                 json dataJSON=json::parse((data->get_string()));
-                t = new thread(all_begins, this->services,dataJSON, getLock(), this->current_socket);
+                t = new thread(all_begins, this->services,dataJSON, getLock(), this->current_socket,this->module);
                 l.getLock()->unlock();
             }));
             current_socket->on(toString(CommunicationEvents::WORK_STATUS), sio::socket::event_listener_aux([&](string const& name, message::ptr const& data, bool isAck,message::list &ack_resp){
@@ -184,7 +190,8 @@ public:
               				json dataJSON=json::parse((data->get_string()));
                       EM("\t WORK-STATUS "<<dataJSON);
               				json reply_info={
-              					  {"MODULE_ID",this->module_id},
+              					  //{"MODULE_ID",this->module->getModule_id()},
+              					  {"MODULE_ID",""},
               					  {"STATUS","ERROR"},
                           {"COMMAND_ID",dataJSON["COMMAND_ID"]},
                           {"GROUP_ID",dataJSON["GROUP_ID"]},
@@ -223,24 +230,24 @@ public:
       return this->l.getLock();
     }
     
-    static void all_begins(Services* services, json dataJSON, mutex* lock, socket::ptr socket){
+    static void all_begins(Services* services, json dataJSON, mutex* lock, socket::ptr socket, Module* module){
         EM("\t ALL-BEGINS ---> "<<dataJSON);
         services->setWorking(true);
         long group_id = dataJSON["GROUP_ID"];
         while (!services->isEmptyCommands(group_id)){
             CommandInfo commandInfo = services->getNextWork(group_id);
             EM(commandInfo.getCommand());
-            t = new thread(consumeService, commandInfo, lock, socket);
+            t = new thread(consumeService, commandInfo, lock, socket,module);
         }
         services->setWorking(false);
     }
     
-    static void consumeService(CommandInfo commandInfo, mutex* lock, socket::ptr socket){
+    static void consumeService(CommandInfo commandInfo, mutex* lock, socket::ptr socket, Module* module){
         json command = commandInfo.getCommand();
         Service* responsible = Service::createFromString(command["COMMAND"]);
         string msg = "";
         if(responsible != NULL){
-            bool result = responsible->execute(command["PARAMS"], command["MODULATION_VALUE"], msg);
+            bool result = responsible->execute(command["PARAMS"], command["MODULATION_VALUE"], msg, module );
             json reply_info = {};
             if(result == true){
                 reply_info={

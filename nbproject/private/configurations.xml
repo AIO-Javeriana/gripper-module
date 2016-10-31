@@ -16,6 +16,8 @@
           </df>
           <df name="mobility_module.dir">
           </df>
+          <df name="Progress">
+          </df>
           <df name="sioclient.dir">
             <df name="libs">
               <df name="socket.io">
@@ -40,6 +42,7 @@
         </df>
         <df name="MobilityModule">
           <in>BlinkService.cpp</in>
+          <in>CalibratingSensorsService.cpp</in>
           <in>MobilityModule.cpp</in>
           <in>MoveService.cpp</in>
           <in>TellService.cpp</in>
@@ -604,6 +607,10 @@
           </df>
         </df>
         <df name="zumo-shield">
+          <df name="lsm303">
+            <in>LSM303.cpp</in>
+            <in>LSM303.h</in>
+          </df>
           <df name="QTRSensors">
             <df name="examples">
               <df name="QTRAExample">
@@ -618,6 +625,14 @@
             <in>QTRSensors.cpp</in>
             <in>QTRSensors.h</in>
           </df>
+          <df name="ZumoMotors">
+            <df name="examples">
+              <df name="ZumoMotorExample">
+              </df>
+            </df>
+            <in>ZumoMotors.cpp</in>
+            <in>ZumoMotors.h</in>
+          </df>
           <df name="ZumoReflectanceSensorArray">
             <df name="examples">
               <df name="SensorCalibration">
@@ -625,6 +640,7 @@
             </df>
             <in>ZumoReflectanceSensorArray.h</in>
           </df>
+          <in>main.cpp</in>
         </df>
       </df>
       <in>main.cpp</in>

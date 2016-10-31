@@ -185,9 +185,9 @@ void automaticSensorCalibration(ZumoReflectanceSensorArray &reflectanceSensors){
 		reflectanceSensors.calibrate();
 		//delay(10);
 	  }
-  	 ZumoMotors::setSpeeds(0, 0);
-	 startTime = millis();
-     ZumoMotors::setSpeeds(CALIBRATION_SPEED , -CALIBRATION_SPEED );
+        ZumoMotors::setSpeeds(0, 0);
+        startTime = millis();
+        ZumoMotors::setSpeeds(CALIBRATION_SPEED , -CALIBRATION_SPEED );
 	while(millis() - startTime < timeLimit)   // make the calibration take 10 seconds
 	  {
 		reflectanceSensors.calibrate();
@@ -199,9 +199,9 @@ void automaticSensorCalibration(ZumoReflectanceSensorArray &reflectanceSensors){
 	  {
 		reflectanceSensors.calibrate();
 	  }
-  	 ZumoMotors::setSpeeds(0, 0);
-	 startTime = millis();
-     ZumoMotors::setSpeeds(-CALIBRATION_SPEED , CALIBRATION_SPEED );
+        ZumoMotors::setSpeeds(0, 0);
+        startTime = millis();
+        ZumoMotors::setSpeeds(-CALIBRATION_SPEED , CALIBRATION_SPEED );
 	while(millis() - startTime < timeLimit)   // make the calibration take 10 seconds
 	  {
 		reflectanceSensors.calibrate();
