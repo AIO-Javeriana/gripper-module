@@ -1,0 +1,17 @@
+Scanning dependencies of target sioclient
+[ 14%] Building CXX object CMakeFiles/sioclient.dir/libs/socket.io/src/sio_client.cpp.o
+[ 28%] Building CXX object CMakeFiles/sioclient.dir/libs/socket.io/src/sio_socket.cpp.o
+[ 42%] Building CXX object CMakeFiles/sioclient.dir/libs/socket.io/src/internal/sio_packet.cpp.o
+[ 57%] Building CXX object CMakeFiles/sioclient.dir/libs/socket.io/src/internal/sio_client_impl.cpp.o
+[ 71%] Linking CXX static library libsioclient.a
+[ 71%] Built target sioclient
+Scanning dependencies of target mobility_module
+[ 85%] Building CXX object CMakeFiles/mobility_module.dir/main.cpp.o
+/home/angel/Documents/thesis/git/mobility-module/main.cpp:9:22: fatal error: wiringPi.h: No such file or directory
+compilation terminated.
+CMakeFiles/mobility_module.dir/build.make:62: recipe for target 'CMakeFiles/mobility_module.dir/main.cpp.o' failed
+make[2]: *** [CMakeFiles/mobility_module.dir/main.cpp.o] Error 1
+CMakeFiles/Makefile2:104: recipe for target 'CMakeFiles/mobility_module.dir/all' failed
+make[1]: *** [CMakeFiles/mobility_module.dir/all] Error 2
+Makefile:127: recipe for target 'all' failed
+make: *** [all] Error 2

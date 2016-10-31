@@ -1,7 +1,10 @@
 
+#ifndef COMMUNICATION_H
+#define COMMUNICATION_H
+
 #include <sio_client.h>
 #include <json.hpp>
-#include <CommunicationEvents.cpp>
+
 
 #include <functional>
 #include <iostream>
@@ -11,6 +14,9 @@
 #include <string>
 #include <queue>
 #include <map>
+#include <CommunicationEvents.cpp>
+#include <Services.cpp>
+#include <thread>
 
 #ifdef WIN32
 
@@ -79,25 +85,44 @@ public:
 
 };
 
+void executeTask(socket::ptr socket, CommandInfo command, string module_id, Services* services){
+    cout << "EXECUTING TASK: " << command.getCommand() << endl;
+    json reply_info={
+                {"MODULE_ID",module_id},
+                {"STATUS","DONE"},//error
+                {"MSG",""}
+                //{"COMMAND_ID",dataJSON["COMMAND_ID"]}
+            };
+    string reply="";
+    reply_info["COMMAND_ID"]=command.getCommand()["COMMAND_ID"];
+    reply_info["GROUP_ID"]=command.getCommand()["GROUP_ID"];
+    if(!command.isError()){
+      reply_info["STATUS"]="DONE";
+    }else{
+        reply_info["STATUS"]="ERROR";
+    }
+    socket->emit(toString(CommunicationEvents::ACTION_FINISHED), reply_info.dump() );
+}
 
 class CommunicationChannel{
     sio::client h;
     connection_listener l;
     socket::ptr current_socket;
-    Services services;
+    Services* services;
     bool subscribed;
     string module_id;
     string url="";
+    static thread* t;
 public:
 
 
-    CommunicationChannel(string host,int port,Services services):l(h){
-       this->subscribed=false;
+    CommunicationChannel(string host,int port,Services* services):l(h){
+        this->subscribed=false;
         this->url=host+":"+to_string(port);
         this->services=services;
     }
 
-    void start(){
+    void start(string module_info){
         h.set_open_listener(std::bind(&connection_listener::on_connected, &l));
         h.set_close_listener(std::bind(&connection_listener::on_close, &l,std::placeholders::_1));
         h.set_fail_listener(std::bind(&connection_listener::on_fail, &l));
@@ -110,9 +135,10 @@ public:
         l.getLock()->unlock();
         current_socket = h.socket();
         bind_events();
+        subscription(module_info);
     }
 
-   void subscription(string &module_info){
+    void subscription(string &module_info){
             current_socket->emit(toString(CommunicationEvents::REGISTRATION), module_info);
     }
 
@@ -131,48 +157,26 @@ public:
             }));
 			current_socket->on(toString(CommunicationEvents::WORK_ASSIGNATION), sio::socket::event_listener_aux([&](string const& name, message::ptr const& data, bool isAck,message::list &ack_resp){
                 l.getLock()->lock();
-        				json dataJSON=json::parse((data->get_string()));
+                json dataJSON=json::parse((data->get_string()));
                 EM("\t WORK-ASSING "<<dataJSON);
-        				json reply_info={
-        					  {"MODULE_ID",this->module_id},
-        					  {"REPLY","ACCEPTED"},
-                    {"COMMAND_ID",dataJSON["COMMAND_ID"]},
-                    {"GROUP_ID",dataJSON["GROUP_ID"]}
+                json reply_info={
+                            {"MODULE_ID",this->module_id},
+                            {"REPLY","ACCEPTED"},
+                            {"COMMAND_ID",dataJSON["COMMAND_ID"]},
+                            {"GROUP_ID",dataJSON["GROUP_ID"]}
                 };
-                if (!this->services.assessWork(dataJSON)){
+                if (!this->services->assessWork(dataJSON)){
                   reply_info["REPLY"]="REFUSE";
                 }
-        				current_socket->emit(toString(CommunicationEvents::WORK_ASSIGNATION_REPLY), reply_info.dump() );
-    		        l.getLock()->unlock();
+                
+                current_socket->emit(toString(CommunicationEvents::WORK_ASSIGNATION_REPLY), reply_info.dump() );
+                l.getLock()->unlock();
             }));
-      current_socket->on(toString(CommunicationEvents::ALL_BEGINS), sio::socket::event_listener_aux([&](string const& name, message::ptr const& data, bool isAck,message::list &ack_resp){
+
+            current_socket->on(toString(CommunicationEvents::ALL_BEGINS), sio::socket::event_listener_aux([&](string const& name, message::ptr const& data, bool isAck,message::list &ack_resp){
                 l.getLock()->lock();
                 json dataJSON=json::parse((data->get_string()));
-                EM("\t ALL-BEGINS "<<dataJSON);
-                json reply_info={
-                    {"MODULE_ID",this->module_id},
-                    {"STATUS","DONE"},//error
-                    {"MSG",""}
-                    //{"COMMAND_ID",dataJSON["COMMAND_ID"]}
-
-                };
-                string reply="";
-                this->services.setWorking(true);
-                while (!services.isEmptyCommands(dataJSON["GROUP_ID"])){
-                      //_lock.lock();
-                      CommandInfo command=services.makeWorkFront(dataJSON["GROUP_ID"]);
-                      reply_info["COMMAND_ID"]=command.getCommand()["COMMAND_ID"];
-                      reply_info["GROUP_ID"]=command.getCommand()["GROUP_ID"];
-                      if(!command.isError()){
-                        reply_info["STATUS"]="DONE";
-                      }else{
-                          reply_info["STATUS"]="ERROR";
-                      }
-                      current_socket->emit(toString(CommunicationEvents::ACTION_FINISHED), reply_info.dump() );
-                      //_lock.unlock();
-                }
-                std::cout << "ACTION-FINISH" << std::endl;
-                this->services.setWorking(false);
+                t = new thread(all_begins, this->services,dataJSON, getLock(), this->current_socket);
                 l.getLock()->unlock();
             }));
             current_socket->on(toString(CommunicationEvents::WORK_STATUS), sio::socket::event_listener_aux([&](string const& name, message::ptr const& data, bool isAck,message::list &ack_resp){
@@ -186,7 +190,7 @@ public:
                           {"GROUP_ID",dataJSON["GROUP_ID"]},
                           {"MSG",""}
                       };
-                      if (!this->services.isWorking()){
+                      if (!this->services->isWorking()){
                         reply_info["STATUS"]="WORKING";
                       }
               				current_socket->emit(toString(CommunicationEvents::WORK_STATUS_REPLY), reply_info.dump() );
@@ -218,7 +222,52 @@ public:
     std::mutex* getLock(){
       return this->l.getLock();
     }
-
+    
+    static void all_begins(Services* services, json dataJSON, mutex* lock, socket::ptr socket){
+        EM("\t ALL-BEGINS ---> "<<dataJSON);
+        services->setWorking(true);
+        long group_id = dataJSON["GROUP_ID"];
+        while (!services->isEmptyCommands(group_id)){
+            CommandInfo commandInfo = services->getNextWork(group_id);
+            EM(commandInfo.getCommand());
+            t = new thread(consumeService, commandInfo, lock, socket);
+        }
+        services->setWorking(false);
+    }
+    
+    static void consumeService(CommandInfo commandInfo, mutex* lock, socket::ptr socket){
+        json command = commandInfo.getCommand();
+        Service* responsible = Service::createFromString(command["COMMAND"]);
+        string msg = "";
+        if(responsible != NULL){
+            bool result = responsible->execute(command["PARAMS"], command["MODULATION_VALUE"], msg);
+            json reply_info = {};
+            if(result == true){
+                reply_info={
+                    {"MODULE_ID","mobility_module"},
+                    {"STATUS","DONE"},
+                    {"ERROR_MESSAGE",""},
+                    {"FINISH_MESSAGE",msg},
+                    {"COMMAND_ID",command["COMMAND_ID"]}
+                };
+            }else{
+                reply_info={
+                    {"MODULE_ID","mobility_module"},
+                    {"STATUS","DONE"},
+                    {"ERROR_MESSAGE",msg},
+                    {"FINISH_MESSAGE",""},
+                    {"COMMAND_ID",command["COMMAND_ID"]}
+                };
+            }
+            cout << "ACTION-FINISH" << endl;
+            lock->lock();
+            socket->emit(toString(CommunicationEvents::ACTION_FINISHED), reply_info.dump() );
+            lock->unlock();
+        }else{
+            // Mandar error
+        }
+    }
+    
     ~CommunicationChannel(){
       cout<<"Destructor CommunicationChannel"<<endl;
       current_socket->off_all();
@@ -228,4 +277,6 @@ public:
       //delete h;
     }
 
-    };
+};
+thread* CommunicationChannel::t = NULL;
+#endif

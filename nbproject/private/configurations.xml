@@ -1,0 +1,681 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configurationDescriptor version="97">
+  <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
+    <df root="." name="0">
+      <df name="build">
+        <df name="CMakeFiles">
+          <df name="3.5.1">
+            <df name="CompilerIdC">
+              <in>CMakeCCompilerId.c</in>
+            </df>
+            <df name="CompilerIdCXX">
+              <in>CMakeCXXCompilerId.cpp</in>
+            </df>
+          </df>
+          <df name="CMakeTmp">
+          </df>
+          <df name="mobility_module.dir">
+          </df>
+          <df name="sioclient.dir">
+            <df name="libs">
+              <df name="socket.io">
+                <df name="src">
+                  <df name="internal">
+                  </df>
+                </df>
+              </df>
+            </df>
+          </df>
+          <in>feature_tests.c</in>
+          <in>feature_tests.cxx</in>
+        </df>
+      </df>
+      <df name="libs">
+        <df name="AIO">
+          <in>CommunicationChannel.cpp</in>
+          <in>CommunicationEvents.cpp</in>
+          <in>Module.cpp</in>
+          <in>Services.cpp</in>
+          <in>json.hpp</in>
+        </df>
+        <df name="MobilityModule">
+          <in>BlinkService.cpp</in>
+          <in>MobilityModule.cpp</in>
+          <in>MoveService.cpp</in>
+          <in>TellService.cpp</in>
+        </df>
+        <df name="socket.io">
+          <df name="lib">
+            <df name="rapidjson">
+              <df name="bin">
+                <df name="data">
+                </df>
+                <df name="encodings">
+                </df>
+                <df name="jsonchecker">
+                </df>
+              </df>
+              <df name="CMakeModules">
+              </df>
+              <df name="doc">
+                <df name="diagram">
+                </df>
+                <df name="logo">
+                </df>
+                <df name="misc">
+                </df>
+              </df>
+              <df name="example">
+                <df name="capitalize">
+                  <in>capitalize.cpp</in>
+                </df>
+                <df name="condense">
+                  <in>condense.cpp</in>
+                </df>
+                <df name="messagereader">
+                  <in>messagereader.cpp</in>
+                </df>
+                <df name="pretty">
+                  <in>pretty.cpp</in>
+                </df>
+                <df name="prettyauto">
+                  <in>prettyauto.cpp</in>
+                </df>
+                <df name="serialize">
+                  <in>serialize.cpp</in>
+                </df>
+                <df name="simpledom">
+                  <in>simpledom.cpp</in>
+                </df>
+                <df name="simplereader">
+                  <in>simplereader.cpp</in>
+                </df>
+                <df name="simplewriter">
+                  <in>simplewriter.cpp</in>
+                </df>
+                <df name="tutorial">
+                  <in>tutorial.cpp</in>
+                </df>
+              </df>
+              <df name="include">
+                <df name="rapidjson">
+                  <df name="error">
+                    <in>en.h</in>
+                    <in>error.h</in>
+                  </df>
+                  <df name="internal">
+                    <in>biginteger.h</in>
+                    <in>diyfp.h</in>
+                    <in>dtoa.h</in>
+                    <in>ieee754.h</in>
+                    <in>itoa.h</in>
+                    <in>meta.h</in>
+                    <in>pow10.h</in>
+                    <in>stack.h</in>
+                    <in>strfunc.h</in>
+                    <in>strtod.h</in>
+                  </df>
+                  <df name="msinttypes">
+                    <in>inttypes.h</in>
+                    <in>stdint.h</in>
+                  </df>
+                  <in>allocators.h</in>
+                  <in>document.h</in>
+                  <in>encodedstream.h</in>
+                  <in>encodings.h</in>
+                  <in>filereadstream.h</in>
+                  <in>filestream.h</in>
+                  <in>filewritestream.h</in>
+                  <in>memorybuffer.h</in>
+                  <in>memorystream.h</in>
+                  <in>prettywriter.h</in>
+                  <in>rapidjson.h</in>
+                  <in>reader.h</in>
+                  <in>stringbuffer.h</in>
+                  <in>writer.h</in>
+                </df>
+              </df>
+              <df name="test">
+                <df name="perftest">
+                  <in>misctest.cpp</in>
+                  <in>perftest.cpp</in>
+                  <in>perftest.h</in>
+                  <in>platformtest.cpp</in>
+                  <in>rapidjsontest.cpp</in>
+                </df>
+                <df name="unittest">
+                  <in>bigintegertest.cpp</in>
+                  <in>documenttest.cpp</in>
+                  <in>encodedstreamtest.cpp</in>
+                  <in>encodingstest.cpp</in>
+                  <in>filestreamtest.cpp</in>
+                  <in>jsoncheckertest.cpp</in>
+                  <in>namespacetest.cpp</in>
+                  <in>readertest.cpp</in>
+                  <in>stringbuffertest.cpp</in>
+                  <in>strtodtest.cpp</in>
+                  <in>unittest.cpp</in>
+                  <in>unittest.h</in>
+                  <in>valuetest.cpp</in>
+                  <in>writertest.cpp</in>
+                </df>
+              </df>
+              <df name="thirdparty">
+                <df name="gtest">
+                  <df name="build-aux">
+                  </df>
+                  <df name="cmake">
+                  </df>
+                  <df name="codegear">
+                    <in>gtest_all.cc</in>
+                    <in>gtest_link.cc</in>
+                  </df>
+                  <df name="include">
+                    <df name="gtest">
+                      <df name="internal">
+                        <in>gtest-death-test-internal.h</in>
+                        <in>gtest-filepath.h</in>
+                        <in>gtest-internal.h</in>
+                        <in>gtest-linked_ptr.h</in>
+                        <in>gtest-param-util-generated.h</in>
+                        <in>gtest-param-util.h</in>
+                        <in>gtest-port.h</in>
+                        <in>gtest-string.h</in>
+                        <in>gtest-tuple.h</in>
+                        <in>gtest-type-util.h</in>
+                      </df>
+                      <in>gtest-death-test.h</in>
+                      <in>gtest-message.h</in>
+                      <in>gtest-param-test.h</in>
+                      <in>gtest-printers.h</in>
+                      <in>gtest-spi.h</in>
+                      <in>gtest-test-part.h</in>
+                      <in>gtest-typed-test.h</in>
+                      <in>gtest.h</in>
+                      <in>gtest_pred_impl.h</in>
+                      <in>gtest_prod.h</in>
+                    </df>
+                  </df>
+                  <df name="m4">
+                  </df>
+                  <df name="msvc">
+                  </df>
+                  <df name="samples">
+                    <in>prime_tables.h</in>
+                    <in>sample1.cc</in>
+                    <in>sample1.h</in>
+                    <in>sample10_unittest.cc</in>
+                    <in>sample1_unittest.cc</in>
+                    <in>sample2.cc</in>
+                    <in>sample2.h</in>
+                    <in>sample2_unittest.cc</in>
+                    <in>sample3-inl.h</in>
+                    <in>sample3_unittest.cc</in>
+                    <in>sample4.cc</in>
+                    <in>sample4.h</in>
+                    <in>sample4_unittest.cc</in>
+                    <in>sample5_unittest.cc</in>
+                    <in>sample6_unittest.cc</in>
+                    <in>sample7_unittest.cc</in>
+                    <in>sample8_unittest.cc</in>
+                    <in>sample9_unittest.cc</in>
+                  </df>
+                  <df name="scripts">
+                  </df>
+                  <df name="src">
+                    <in>gtest-all.cc</in>
+                    <in>gtest-death-test.cc</in>
+                    <in>gtest-filepath.cc</in>
+                    <in>gtest-internal-inl.h</in>
+                    <in>gtest-port.cc</in>
+                    <in>gtest-printers.cc</in>
+                    <in>gtest-test-part.cc</in>
+                    <in>gtest-typed-test.cc</in>
+                    <in>gtest.cc</in>
+                    <in>gtest_main.cc</in>
+                  </df>
+                  <df name="test">
+                    <in>gtest-death-test_ex_test.cc</in>
+                    <in>gtest-death-test_test.cc</in>
+                    <in>gtest-filepath_test.cc</in>
+                    <in>gtest-linked_ptr_test.cc</in>
+                    <in>gtest-listener_test.cc</in>
+                    <in>gtest-message_test.cc</in>
+                    <in>gtest-options_test.cc</in>
+                    <in>gtest-param-test2_test.cc</in>
+                    <in>gtest-param-test_test.cc</in>
+                    <in>gtest-param-test_test.h</in>
+                    <in>gtest-port_test.cc</in>
+                    <in>gtest-printers_test.cc</in>
+                    <in>gtest-test-part_test.cc</in>
+                    <in>gtest-tuple_test.cc</in>
+                    <in>gtest-typed-test2_test.cc</in>
+                    <in>gtest-typed-test_test.cc</in>
+                    <in>gtest-typed-test_test.h</in>
+                    <in>gtest-unittest-api_test.cc</in>
+                    <in>gtest_all_test.cc</in>
+                    <in>gtest_break_on_failure_unittest_.cc</in>
+                    <in>gtest_catch_exceptions_test_.cc</in>
+                    <in>gtest_color_test_.cc</in>
+                    <in>gtest_env_var_test_.cc</in>
+                    <in>gtest_environment_test.cc</in>
+                    <in>gtest_filter_unittest_.cc</in>
+                    <in>gtest_help_test_.cc</in>
+                    <in>gtest_list_tests_unittest_.cc</in>
+                    <in>gtest_main_unittest.cc</in>
+                    <in>gtest_no_test_unittest.cc</in>
+                    <in>gtest_output_test_.cc</in>
+                    <in>gtest_pred_impl_unittest.cc</in>
+                    <in>gtest_premature_exit_test.cc</in>
+                    <in>gtest_prod_test.cc</in>
+                    <in>gtest_repeat_test.cc</in>
+                    <in>gtest_shuffle_test_.cc</in>
+                    <in>gtest_sole_header_test.cc</in>
+                    <in>gtest_stress_test.cc</in>
+                    <in>gtest_throw_on_failure_ex_test.cc</in>
+                    <in>gtest_throw_on_failure_test_.cc</in>
+                    <in>gtest_uninitialized_test_.cc</in>
+                    <in>gtest_unittest.cc</in>
+                    <in>gtest_xml_outfile1_test_.cc</in>
+                    <in>gtest_xml_outfile2_test_.cc</in>
+                    <in>gtest_xml_output_unittest_.cc</in>
+                    <in>production.cc</in>
+                    <in>production.h</in>
+                  </df>
+                  <df name="xcode">
+                    <df name="Config">
+                    </df>
+                    <df name="gtest.xcodeproj">
+                    </df>
+                    <df name="Resources">
+                    </df>
+                    <df name="Samples">
+                      <df name="FrameworkSample">
+                        <df name="WidgetFramework.xcodeproj">
+                        </df>
+                        <in>widget.cc</in>
+                        <in>widget.h</in>
+                        <in>widget_test.cc</in>
+                      </df>
+                    </df>
+                    <df name="Scripts">
+                    </df>
+                  </df>
+                </df>
+              </df>
+            </df>
+            <df name="websocketpp">
+              <df name="cmake">
+              </df>
+              <df name="docs">
+                <in>simple_broadcast_server.cpp</in>
+                <in>simple_count_server_thread.cpp</in>
+              </df>
+              <df name="examples">
+                <df name="associative_storage">
+                  <in>associative_storage.cpp</in>
+                </df>
+                <df name="broadcast_server">
+                  <in>broadcast_server.cpp</in>
+                </df>
+                <df name="debug_client">
+                  <in>debug_client.cpp</in>
+                </df>
+                <df name="debug_server">
+                  <in>debug_server.cpp</in>
+                </df>
+                <df name="dev">
+                  <in>main.cpp</in>
+                </df>
+                <df name="echo_server">
+                  <in>echo_handler.hpp</in>
+                  <in>echo_server.cpp</in>
+                </df>
+                <df name="echo_server_both">
+                  <in>echo_server_both.cpp</in>
+                </df>
+                <df name="echo_server_tls">
+                  <in>echo_server_tls.cpp</in>
+                </df>
+                <df name="enriched_storage">
+                  <in>enriched_storage.cpp</in>
+                </df>
+                <df name="handler_switch">
+                  <in>handler_switch.cpp</in>
+                </df>
+                <df name="iostream_server">
+                  <in>iostream_server.cpp</in>
+                </df>
+                <df name="print_server">
+                  <in>print_server.cpp</in>
+                </df>
+                <df name="simple_broadcast_server">
+                  <in>simple_broadcast_server.cpp</in>
+                </df>
+                <df name="sip_client">
+                  <in>sip_client.cpp</in>
+                </df>
+                <df name="subprotocol_server">
+                  <in>subprotocol_server.cpp</in>
+                </df>
+                <df name="telemetry_client">
+                  <in>telemetry_client.cpp</in>
+                </df>
+                <df name="telemetry_server">
+                  <in>telemetry_server.cpp</in>
+                </df>
+                <df name="testee_client">
+                  <in>testee_client.cpp</in>
+                </df>
+                <df name="testee_server">
+                  <in>testee_server.cpp</in>
+                </df>
+                <df name="utility_client">
+                  <in>utility_client.cpp</in>
+                </df>
+              </df>
+              <df name="test">
+                <df name="connection">
+                  <in>connection.cpp</in>
+                  <in>connection_tu2.cpp</in>
+                  <in>connection_tu2.hpp</in>
+                </df>
+                <df name="endpoint">
+                  <in>endpoint.cpp</in>
+                </df>
+                <df name="extension">
+                  <in>extension.cpp</in>
+                  <in>permessage_deflate.cpp</in>
+                </df>
+                <df name="http">
+                  <in>parser.cpp</in>
+                  <in>parser_perf.cpp</in>
+                </df>
+                <df name="logger">
+                  <in>basic.cpp</in>
+                </df>
+                <df name="message_buffer">
+                  <in>alloc.cpp</in>
+                  <in>message.cpp</in>
+                  <in>pool.cpp</in>
+                </df>
+                <df name="processors">
+                  <in>extension_permessage_compress.cpp</in>
+                  <in>hybi00.cpp</in>
+                  <in>hybi07.cpp</in>
+                  <in>hybi08.cpp</in>
+                  <in>hybi13.cpp</in>
+                  <in>processor.cpp</in>
+                </df>
+                <df name="random">
+                  <in>none.cpp</in>
+                  <in>random_device.cpp</in>
+                </df>
+                <df name="roles">
+                  <in>client.cpp</in>
+                  <in>server.cpp</in>
+                </df>
+                <df name="transport">
+                  <df name="asio">
+                    <in>base.cpp</in>
+                    <in>timers.cpp</in>
+                  </df>
+                  <df name="iostream">
+                    <in>base.cpp</in>
+                    <in>connection.cpp</in>
+                    <in>endpoint.cpp</in>
+                  </df>
+                  <in>hybi_util.cpp</in>
+                  <in>integration.cpp</in>
+                </df>
+                <df name="utility">
+                  <in>close.cpp</in>
+                  <in>error.cpp</in>
+                  <in>frame.cpp</in>
+                  <in>sha1.cpp</in>
+                  <in>uri.cpp</in>
+                  <in>utilities.cpp</in>
+                </df>
+              </df>
+              <df name="tutorials">
+                <df name="broadcast_tutorial">
+                </df>
+                <df name="chat_tutorial">
+                </df>
+                <df name="utility_client">
+                  <in>step1.cpp</in>
+                  <in>step2.cpp</in>
+                  <in>step3.cpp</in>
+                  <in>step4.cpp</in>
+                  <in>step5.cpp</in>
+                  <in>step6.cpp</in>
+                </df>
+              </df>
+              <df name="websocketpp">
+                <df name="base64">
+                  <in>base64.hpp</in>
+                </df>
+                <df name="common">
+                  <in>chrono.hpp</in>
+                  <in>connection_hdl.hpp</in>
+                  <in>cpp11.hpp</in>
+                  <in>functional.hpp</in>
+                  <in>md5.hpp</in>
+                  <in>memory.hpp</in>
+                  <in>network.hpp</in>
+                  <in>platforms.hpp</in>
+                  <in>random.hpp</in>
+                  <in>regex.hpp</in>
+                  <in>stdint.hpp</in>
+                  <in>system_error.hpp</in>
+                  <in>thread.hpp</in>
+                  <in>time.hpp</in>
+                </df>
+                <df name="concurrency">
+                  <in>basic.hpp</in>
+                  <in>none.hpp</in>
+                </df>
+                <df name="config">
+                  <in>asio.hpp</in>
+                  <in>asio_client.hpp</in>
+                  <in>asio_no_tls.hpp</in>
+                  <in>asio_no_tls_client.hpp</in>
+                  <in>boost_config.hpp</in>
+                  <in>core.hpp</in>
+                  <in>core_client.hpp</in>
+                  <in>debug.hpp</in>
+                  <in>debug_asio.hpp</in>
+                  <in>debug_asio_no_tls.hpp</in>
+                  <in>minimal_client.hpp</in>
+                  <in>minimal_server.hpp</in>
+                </df>
+                <df name="extensions">
+                  <df name="permessage_deflate">
+                    <in>disabled.hpp</in>
+                    <in>enabled.hpp</in>
+                  </df>
+                  <in>extension.hpp</in>
+                </df>
+                <df name="http">
+                  <df name="impl">
+                    <in>parser.hpp</in>
+                    <in>request.hpp</in>
+                    <in>response.hpp</in>
+                  </df>
+                  <in>constants.hpp</in>
+                  <in>parser.hpp</in>
+                  <in>request.hpp</in>
+                  <in>response.hpp</in>
+                </df>
+                <df name="impl">
+                  <in>connection_impl.hpp</in>
+                  <in>endpoint_impl.hpp</in>
+                  <in>utilities_impl.hpp</in>
+                </df>
+                <df name="logger">
+                  <in>basic.hpp</in>
+                  <in>levels.hpp</in>
+                  <in>stub.hpp</in>
+                  <in>syslog.hpp</in>
+                </df>
+                <df name="message_buffer">
+                  <in>alloc.hpp</in>
+                  <in>message.hpp</in>
+                  <in>pool.hpp</in>
+                </df>
+                <df name="processors">
+                  <in>base.hpp</in>
+                  <in>hybi00.hpp</in>
+                  <in>hybi07.hpp</in>
+                  <in>hybi08.hpp</in>
+                  <in>hybi13.hpp</in>
+                  <in>processor.hpp</in>
+                </df>
+                <df name="random">
+                  <in>none.hpp</in>
+                  <in>random_device.hpp</in>
+                </df>
+                <df name="roles">
+                  <in>client_endpoint.hpp</in>
+                  <in>server_endpoint.hpp</in>
+                </df>
+                <df name="sha1">
+                  <in>sha1.hpp</in>
+                </df>
+                <df name="transport">
+                  <df name="asio">
+                    <df name="security">
+                      <in>base.hpp</in>
+                      <in>none.hpp</in>
+                      <in>tls.hpp</in>
+                    </df>
+                    <in>base.hpp</in>
+                    <in>connection.hpp</in>
+                    <in>endpoint.hpp</in>
+                  </df>
+                  <df name="base">
+                    <in>connection.hpp</in>
+                    <in>endpoint.hpp</in>
+                  </df>
+                  <df name="debug">
+                    <in>base.hpp</in>
+                    <in>connection.hpp</in>
+                    <in>endpoint.hpp</in>
+                  </df>
+                  <df name="iostream">
+                    <in>base.hpp</in>
+                    <in>connection.hpp</in>
+                    <in>endpoint.hpp</in>
+                  </df>
+                  <df name="stub">
+                    <in>base.hpp</in>
+                    <in>connection.hpp</in>
+                    <in>endpoint.hpp</in>
+                  </df>
+                </df>
+                <in>client.hpp</in>
+                <in>close.hpp</in>
+                <in>connection.hpp</in>
+                <in>connection_base.hpp</in>
+                <in>endpoint.hpp</in>
+                <in>endpoint_base.hpp</in>
+                <in>error.hpp</in>
+                <in>frame.hpp</in>
+                <in>server.hpp</in>
+                <in>uri.hpp</in>
+                <in>utf8_validator.hpp</in>
+                <in>utilities.hpp</in>
+                <in>version.hpp</in>
+              </df>
+            </df>
+          </df>
+          <df name="src">
+            <df name="internal">
+              <in>sio_client_impl.cpp</in>
+              <in>sio_client_impl.h</in>
+              <in>sio_packet.cpp</in>
+              <in>sio_packet.h</in>
+            </df>
+            <in>sio_client.cpp</in>
+            <in>sio_client.h</in>
+            <in>sio_message.h</in>
+            <in>sio_socket.cpp</in>
+            <in>sio_socket.h</in>
+          </df>
+        </df>
+        <df name="zumo-shield">
+          <df name="QTRSensors">
+            <df name="examples">
+              <df name="QTRAExample">
+              </df>
+              <df name="QTRARawValuesExample">
+              </df>
+              <df name="QTRRCExample">
+              </df>
+              <df name="QTRRCRawValuesExample">
+              </df>
+            </df>
+            <in>QTRSensors.cpp</in>
+            <in>QTRSensors.h</in>
+          </df>
+          <df name="ZumoReflectanceSensorArray">
+            <df name="examples">
+              <df name="SensorCalibration">
+              </df>
+            </df>
+            <in>ZumoReflectanceSensorArray.h</in>
+          </df>
+        </df>
+      </df>
+      <in>main.cpp</in>
+    </df>
+  </logicalFolder>
+  <projectmakefile>build/Makefile</projectmakefile>
+  <confs>
+    <conf name="Default" type="0">
+      <toolsSet>
+        <developmentServer>localhost</developmentServer>
+        <platform>2</platform>
+      </toolsSet>
+      <compile>
+        <compiledirpicklist>
+          <compiledirpicklistitem>.</compiledirpicklistitem>
+          <compiledirpicklistitem>${AUTO_FOLDER}</compiledirpicklistitem>
+        </compiledirpicklist>
+        <compiledir>${AUTO_FOLDER}</compiledir>
+        <compilecommandpicklist>
+          <compilecommandpicklistitem>${MAKE} ${ITEM_NAME}.o</compilecommandpicklistitem>
+          <compilecommandpicklistitem>${AUTO_COMPILE}</compilecommandpicklistitem>
+        </compilecommandpicklist>
+        <compilecommand>${AUTO_COMPILE}</compilecommand>
+      </compile>
+      <dbx_gdbdebugger version="1">
+        <gdb_pathmaps>
+        </gdb_pathmaps>
+        <gdb_interceptlist>
+          <gdbinterceptoptions gdb_all="false" gdb_unhandled="true" gdb_unexpected="true"/>
+        </gdb_interceptlist>
+        <gdb_options>
+          <DebugOptions>
+          </DebugOptions>
+        </gdb_options>
+        <gdb_buildfirst gdb_buildfirst_overriden="false" gdb_buildfirst_old="false"/>
+      </dbx_gdbdebugger>
+      <nativedebugger version="1">
+        <engine>gdb</engine>
+      </nativedebugger>
+      <runprofile version="9">
+        <runcommandpicklist>
+          <runcommandpicklistitem>"${OUTPUT_PATH}"</runcommandpicklistitem>
+        </runcommandpicklist>
+        <runcommand>"${OUTPUT_PATH}"</runcommand>
+        <rundir>build</rundir>
+        <buildfirst>false</buildfirst>
+        <terminal-type>0</terminal-type>
+        <remove-instrumentation>0</remove-instrumentation>
+        <environment>
+        </environment>
+      </runprofile>
+    </conf>
+  </confs>
+</configurationDescriptor>

@@ -1,81 +1,35 @@
+#ifndef MODULE_H
+#define MODULE_H
+
 #include <json.hpp>
 #include <string>
-#include <queue>
-#include <map>
-
+#include <CommunicationChannel.cpp>
 
 using json = nlohmann::json;
 using namespace std;
 
-class CommandInfo{
-    json command;
-    bool completed;
-    bool error;
-
-  public:
-      CommandInfo(json command){
-        this->command=command;
-        this->completed=false;
-        this->error=false;
-
-      }
-      void setCommand(json command){
-        this->command=command;
-      }
-      json getCommand(){
-        return this->command;
-      }
-      void completedWork(){
-          this->completed=true;
-      }
-      void errorWork(){
-          this->completed=true;
-      }
-      bool isCompletedTask(){
-          return this->completed;
-      }
-      bool isError(){
-          return this->error;
-      }
+class Module{
+    
+    string ID;
+    Services* services;
+    CommunicationChannel* communicationChannel;
+    
+    public:
+        Module(string ID, string host, int port){
+            this->ID = ID;
+            this->services = new Services();
+            this->communicationChannel = new CommunicationChannel(host, port, this->services);
+        }
+        
+        void addService(Service* service){
+            this->services->addService(service);
+        }
+        
+        void start(){
+            json module_info = this->services->getInfo();
+            module_info["MODULE_ID"] = this->ID;
+            this->communicationChannel->start(module_info.dump());
+        }
 };
 
-class Services{
-    map<long,queue<CommandInfo>> commandsInfo;
-    bool working;
-
-  public:
-      Services(){
-          this->working=false;
-      }
-
-      bool assessWork(json command){
-          if (command["COMMAND"]=="BLINK") {
-              this->commandsInfo[command["GROUP_ID"]].push(CommandInfo(command));
-              return true;
-          }else if (command["COMMAND"]=="DECIR") {
-              this->commandsInfo[command["GROUP_ID"]].push(CommandInfo(command));
-              return true;
-          }
-          return false;
-      }
-
-      CommandInfo makeWorkFront(long group_id){
-            CommandInfo command=this->commandsInfo[group_id].front();
-            this->commandsInfo[group_id].pop();
-            command.completedWork();
-            return command;
-      }
-
-      bool isEmptyCommands(long group_id){
-            return this->commandsInfo[group_id].empty();
-      }
-
-      void setWorking(bool working){
-          this->working=working;
-      }
-
-      bool isWorking(){
-          return this->working;
-      }
-
-};
+#endif
