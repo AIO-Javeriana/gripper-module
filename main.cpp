@@ -47,14 +47,16 @@ bool isLine(unsigned int sensorValue){
 bool isThereIntersection(unsigned int sensorValues[]){
 	int sensors=0;
 	int threshold=800;
+	
 	for (int i = 0; i < NUM_SENSORS; i++){
 			cout<<sensorValues[i]<<endl;
 		 if (isLine(sensorValues[i])){
 				sensors++;
 			}else if (i+1 < NUM_SENSORS && isLine(sensorValues[i+1]) && i-1>=0 && !isLine(sensorValues[i-1]) && sensors >0){
-					return true;				
+					//return true;				
 				}
 		}
+	//*/
 	cout<<" ->>>>>>>>> "<< sensors<<endl;
 	if (sensors==6){
 		return true;
@@ -118,27 +120,43 @@ void move(ZumoReflectanceSensorArray &reflectanceSensors,int &lastError,int &int
   // individual sensor readings
   int position = reflectanceSensors.readLine(sensorValues);
   isIntersection=isThereIntersection(sensorValues);
-  if (isIntersection){
-	cout<<"New Values position "<<position<<endl;
+  if (isIntersection && direction==0){
+	cout<<"New Values position "<<position<<"    "<<direction <<endl;
 	for (int i = 0; i < NUM_SENSORS; i++){
 			cout<<sensorValues[i]<<endl;
 		}
 	 return;																															
+	}else{
+		isIntersection=false;	
 	}
-	if (position>2000 && position<3000 &&isLine(sensorValues[2]) && isLine(sensorValues[3])&& !isLine(sensorValues[1])){
+	
+	if (position>2000 && position<3000 &&isLine(sensorValues[2]) && isLine(sensorValues[3])&& !isLine(sensorValues[1])&& !isLine(sensorValues[4])){
+		cout<<sensorValues[1]<<" ++ "<<sensorValues[4]<<endl;		
 		direction=0;
 	}
 
 	switch (direction){
 		case (1): 
-					position=5000;				
-					for(int i=NUM_SENSORS-1;i>=0;i++){
+					position=5000;
+					cout<< position;									
+					for(int i=NUM_SENSORS-1;i>=0;i--){
 						if(isLine(sensorValues[i])){
 							position=i*1000;
 							break;						
 						}
 					}
-			
+					cout<<"   --------------------- "<<position<<endl;
+					break;
+		case (2): 
+					position=0;
+					cout<< position;									
+					for(int i=0;i<NUM_SENSORS;i++){
+						if(isLine(sensorValues[i])){
+							position=i*1000;
+							break;						
+						}
+					}
+					cout<<"   --------------------- "<<position<<endl;
 					break;
 	};
 	followLine(position ,lastError,integral);
@@ -161,7 +179,7 @@ void automaticSensorCalibration(ZumoReflectanceSensorArray &reflectanceSensors){
   for(i = 0; i < 2; i++)
   {
 	startTime = millis();
- 	ZumoMotors::setSpeeds(-CALIBRATION_SPEED , CALIBRATION_SPEED*1.05 );	
+ 	ZumoMotors::setSpeeds(-CALIBRATION_SPEED , CALIBRATION_SPEED );	
 	while(millis() - startTime < timeLimit)   // make the calibration take 10 seconds
 	  {
 		reflectanceSensors.calibrate();
@@ -169,21 +187,21 @@ void automaticSensorCalibration(ZumoReflectanceSensorArray &reflectanceSensors){
 	  }
   	 ZumoMotors::setSpeeds(0, 0);
 	 startTime = millis();
-     ZumoMotors::setSpeeds(CALIBRATION_SPEED , -CALIBRATION_SPEED*1.05 );
+     ZumoMotors::setSpeeds(CALIBRATION_SPEED , -CALIBRATION_SPEED );
 	while(millis() - startTime < timeLimit)   // make the calibration take 10 seconds
 	  {
 		reflectanceSensors.calibrate();
 	  }
 	ZumoMotors::setSpeeds(0, 0);
 	startTime = millis();
- 	ZumoMotors::setSpeeds(CALIBRATION_SPEED , -CALIBRATION_SPEED*1.05 );	
+ 	ZumoMotors::setSpeeds(CALIBRATION_SPEED , -CALIBRATION_SPEED );	
 	while(millis() - startTime < timeLimit)   // make the calibration take 10 seconds
 	  {
 		reflectanceSensors.calibrate();
 	  }
   	 ZumoMotors::setSpeeds(0, 0);
 	 startTime = millis();
-     ZumoMotors::setSpeeds(-CALIBRATION_SPEED , CALIBRATION_SPEED*1.05 );
+     ZumoMotors::setSpeeds(-CALIBRATION_SPEED , CALIBRATION_SPEED );
 	while(millis() - startTime < timeLimit)   // make the calibration take 10 seconds
 	  {
 		reflectanceSensors.calibrate();
@@ -234,18 +252,21 @@ void setup(ZumoReflectanceSensorArray &reflectanceSensors)
   bool isIntersection=false;
   do{
 	  cout<<" 0 follow line "<<endl;
-	  cout<<" 1 follow line turn riiight"<<endl;
+	  cout<<" 1 follow line turn right"<<endl;
 	  cout<<" 2 follow line turn left"<<endl;
 	  cout<<" 3 exit "<<endl;
-	  cin>>opc;
+	  cin>>direction;
       isIntersection=false;
-	  if(opc==3){
+	  if(direction==3){
 		isIntersection=true;
 	  }	
 	  while(!isIntersection){
 	  	move(reflectanceSensors,lastError,integral,isIntersection,direction);
 	  }
-    }while(opc!=3);
+	  ZumoMotors::setSpeeds(0,0 );
+  	  ZumoMotors::init(); 
+    
+    }while(direction!=3);
 }
 
 void testReflectanceSensorArray(ZumoReflectanceSensorArray reflectanceSensors){
