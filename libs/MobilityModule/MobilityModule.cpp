@@ -4,6 +4,7 @@
 
 //#include<ModuleInfo.cpp>
 #include <Module.cpp>
+#include <CalibratingSensorsService.cpp>
 /*
 #include <wiringPi.h>
 #include <wiringPiI2C.h>
@@ -29,6 +30,7 @@ class MobilityModuleInfo: public ModuleInfo{
     public:
         MobilityModuleInfo(std::string module_id):ModuleInfo(module_id){
             /*
+             pinMode (LED, OUTPUT) ;
              wiringPiSetup () ;
              ZumoMotors::init(); 
              wiringPiSetup () ;
@@ -43,6 +45,7 @@ class MobilityModule: public Module{
     public:
         MobilityModule(std::string host, int port,MobilityModuleInfo *moduleInfo) :
             Module(host, port,moduleInfo) {
+                this->addService(new CalibratingSensorsService());
         }
 
 };

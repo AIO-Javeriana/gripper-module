@@ -12,10 +12,10 @@ using namespace std;
 
 class Module{
     
-  
-    Services* services;
-    CommunicationChannel* communicationChannel;
-    ModuleInfo* moduleInfo;
+    protected:
+        Services* services;
+        CommunicationChannel* communicationChannel;
+        ModuleInfo* moduleInfo;
     public:
         Module( string host, int port, ModuleInfo *moduleInfo){
             this->moduleInfo = moduleInfo;

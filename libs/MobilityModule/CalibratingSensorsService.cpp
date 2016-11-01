@@ -29,7 +29,7 @@ public:
         this->name="CALIBRATING-SENDORS";
         this->interruptible=false;
         this->service=false;
-        this->params.add("AUTOMATIC");//true is automatic or false is manual 
+        this->params.push_back("AUTOMATIC");//true is automatic or false is manual 
     }
     
     CalibratingSensorsService(string name, list<string> params, bool interruptible, bool service) :
