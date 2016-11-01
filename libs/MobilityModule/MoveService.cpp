@@ -7,7 +7,7 @@
 #include <MobilityModuleInfo.cpp>
 #include <Services.cpp>
 #include <string>
-/*
+
 #include <wiringPi.h>
 #include <wiringPiI2C.h>
 #include <ZumoReflectanceSensorArray.h>
@@ -80,11 +80,10 @@ public:
             direction=2;
         }
         
-        /*
+        int lastError = 0,integral=0;
         while(!isIntersection){
-              move(reflectanceSensors,lastError,integral,isIntersection,direction);
+              move(mobilityModuleInfo->getReflectanceSensorArray(),lastError,integral,isIntersection,direction);
         }
-       
         ZumoMotors::setSpeeds(0,0 );
         ZumoMotors::init(); 
         //*/
@@ -96,23 +95,23 @@ public:
     }
 
     bool isThereIntersection(unsigned int sensorValues[]){
-	int sensors=0;
-	int threshold=800;
+		int sensors=0;
+		int threshold=800;
 	
-	for (int i = 0; i < NUM_SENSORS; i++){
-			cout<<sensorValues[i]<<endl;
-		 if (isLine(sensorValues[i])){
-				sensors++;
-			}else if (i+1 < NUM_SENSORS && isLine(sensorValues[i+1]) && i-1>=0 && !isLine(sensorValues[i-1]) && sensors >0){
-					//return true;				
-				}
+		for (int i = 0; i < NUM_SENSORS; i++){
+				cout<<sensorValues[i]<<endl;
+			 if (isLine(sensorValues[i])){
+					sensors++;
+				}else if (i+1 < NUM_SENSORS && isLine(sensorValues[i+1]) && i-1>=0 && !isLine(sensorValues[i-1]) && sensors >0){
+						//return true;				
+					}
+			}
+		//*/
+		cout<<" ->>>>>>>>> "<< sensors<<endl;
+		if (sensors==6){
+			return true;
 		}
-	//*/
-	cout<<" ->>>>>>>>> "<< sensors<<endl;
-	if (sensors==6){
-		return true;
-	}
-	return false;
+		return false;
     }
 
     void followLine(int position ,int &lastError,int &integral){
@@ -151,11 +150,10 @@ public:
           m1Speed = MAX_SPEED;
         if (m2Speed > MAX_SPEED)
           m2Speed = MAX_SPEED;
-        //ZumoMotors::setSpeeds(m1Speed, m2Speed);
+         ZumoMotors::setSpeeds(m1Speed, m2Speed);
 
     }
 
-    /*
     
     void move(ZumoReflectanceSensorArray &reflectanceSensors,int &lastError,int &integral,bool &isIntersection,int &direction){
         unsigned int sensorValues[NUM_SENSORS];

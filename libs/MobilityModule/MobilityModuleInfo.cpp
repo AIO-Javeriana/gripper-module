@@ -9,7 +9,6 @@
 #define MOBILITYMODULEINFO_H
 
 
-/*
 #include <wiringPi.h>
 #include <wiringPiI2C.h>
 #include <ZumoReflectanceSensorArray.h>
@@ -29,11 +28,10 @@
 
 class MobilityModuleInfo: public ModuleInfo{
     private:
-        //ZumoReflectanceSensorArray reflectanceSensors;
+        ZumoReflectanceSensorArray reflectanceSensors;
         unsigned int sensorValues[NUM_SENSORS];
     public:
         MobilityModuleInfo(std::string module_id):ModuleInfo(module_id){
-            /*
              pinMode (LED, OUTPUT) ;
              wiringPiSetup () ;
              ZumoMotors::init(); 
@@ -42,5 +40,10 @@ class MobilityModuleInfo: public ModuleInfo{
             // */
             
         }
+		
+		ZumoReflectanceSensorArray& getReflectanceSensorArray(){
+			return reflectanceSensors;
+		} 
+		//*/
 };
 #endif

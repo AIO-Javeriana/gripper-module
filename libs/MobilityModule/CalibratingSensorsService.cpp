@@ -2,7 +2,7 @@
 #define CALIBRATINGSENSORSSERVICE_H
 
 #include <Services.cpp>
-/*
+#include <MobilityModuleInfo.cpp>
 #include <wiringPi.h>
 #include <wiringPiI2C.h>
 #include <ZumoReflectanceSensorArray.h>
@@ -22,6 +22,18 @@
 
 #endif
 using namespace std;
+
+#define	LED	24
+#define NUM_SENSORS 6
+#define PORT_ADC1 0
+#define M1DIR 3
+#define M2DIR 21
+// This is the maximum speed the motors will be allowed to turn.
+// (400 lets the motors go at top speed; decrease to impose a speed limit)
+#define MAX_SPEED  200
+#define MIN_SPEED  -200
+#define CALIBRATION_SPEED 150
+#define THRESHOLD 800
 
 class CalibratingSensorsService: public Service{
 
@@ -44,34 +56,28 @@ public:
     }
     
     bool execute(json params, string &msg,ModuleInfo* moduleInfo){
+		MobilityModuleInfo* mobilityModuleInfo=dynamic_cast<MobilityModuleInfo*>(moduleInfo);
         HIGHLIGHT("CALIBRATING-SENDORS: ");
         cout << params["EMOTIONAL_VALUE"] <<" "<<params["MODE"] << endl;
         string mode=params["MODE"];
-        if((mode).compare("AUTOMATIC")==0 ){
-            
-        }else if((mode).compare("MANUAL")==0 ){
-        
-        }
-        /*    
         ZumoMotors::init();
         // Turn on LED to indicate we are in calibration mode
         pinMode (LED, OUTPUT) ;
         digitalWrite (LED, HIGH) ;	// On
         //*//*
-        if(params["AUTOMATIC"]){
-            automaticSensorCalibration();
-        }else {
-            manualSensorCalibration();
+        if((mode).compare("AUTOMATIC")==0 ){
+            automaticSensorCalibration(mobilityModuleInfo->getReflectanceSensorArray());
+        }else if((mode).compare("MANUAL")==0 ){
+            manualSensorCalibration(mobilityModuleInfo->getReflectanceSensorArray());
         }
-        //digitalWrite (LED, LOW) ;	// Off
+        digitalWrite (LED, LOW) ;	// Off
         //*/
         msg = "TERMINEE";
         return true;
     }
     
-    void automaticSensorCalibration(/*ZumoReflectanceSensorArray &reflectanceSensors*/){
+    void automaticSensorCalibration(ZumoReflectanceSensorArray &reflectanceSensors){
         cout<<"AUTOMATIC CALIBRATION"<<endl;
-        /*
             ZumoMotors::init();
             // Initialize the reflectance sensors module
             reflectanceSensors.init();
@@ -124,18 +130,16 @@ public:
                //*/
     }
     
-    void manualSensorCalibration(/*ZumoReflectanceSensorArray &reflectanceSensors*/){
-        cout<<"MANUAL CALIBRATION"<<endl;
-        
-            /*
-            reflectanceSensors.init();
-            unsigned long startTime = millis();
-            while(millis() - startTime < 10000)   // make the calibration take 10 seconds
-            {
-                reflectanceSensors.calibrate();
-            }
-                
-               */
+    void manualSensorCalibration(ZumoReflectanceSensorArray &reflectanceSensors){
+		cout<<"MANUAL CALIBRATION"<<endl;
+     	reflectanceSensors.init();
+        unsigned long startTime = millis();
+        while(millis() - startTime < 10000)   // make the calibration take 10 seconds
+        {
+            reflectanceSensors.calibrate();
+        }
+            
+             //*/
     }
 };
 
