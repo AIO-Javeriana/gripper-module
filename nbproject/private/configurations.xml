@@ -4,7 +4,7 @@
     <df root="." name="0">
       <df name="build">
         <df name="CMakeFiles">
-          <df name="3.5.1">
+          <df name="3.4.1">
             <df name="CompilerIdC">
               <in>CMakeCCompilerId.c</in>
             </df>
@@ -16,9 +16,17 @@
           </df>
           <df name="mobility_module.dir">
           </df>
-          <df name="Progress">
-          </df>
           <df name="sioclient.dir">
+            <df name="libs">
+              <df name="socket.io">
+                <df name="src">
+                  <df name="internal">
+                  </df>
+                </df>
+              </df>
+            </df>
+          </df>
+          <df name="sioclient_tls.dir">
             <df name="libs">
               <df name="socket.io">
                 <df name="src">
@@ -37,6 +45,7 @@
           <in>CommunicationChannel.cpp</in>
           <in>CommunicationEvents.cpp</in>
           <in>Module.cpp</in>
+          <in>ModuleInfo.cpp</in>
           <in>Services.cpp</in>
           <in>json.hpp</in>
         </df>

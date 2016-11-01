@@ -245,7 +245,7 @@ public:
         Service* responsible = Service::createFromString(command["COMMAND"]);
         string msg = "";
         if(responsible != NULL){
-            bool result = responsible->execute(command["PARAMS"], command["MODULATION_VALUE"], msg,moduleInfo);
+            bool result = responsible->execute(command["PARAMS"], msg,moduleInfo);
             json reply_info = {};
             if(result == true){
                 reply_info={

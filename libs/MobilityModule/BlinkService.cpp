@@ -31,9 +31,9 @@ public:
         return new BlinkService; 
     }
     
-    bool execute(json params, double modulationValue, string &msg,ModuleInfo* moduleInfo){
+    bool execute(json params, string &msg,ModuleInfo* moduleInfo){
         HIGHLIGHT("BLINK: ");
-        cout << modulationValue << endl;
+        cout << params["EMOTIONAL_VALUE"] << endl;
         msg = "TERMINEE";
         return true;
     }

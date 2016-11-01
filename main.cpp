@@ -28,15 +28,6 @@ void start(){
   string module_id="mobility_module";
   MobilityModuleInfo moduleInfo(module_id);
   MobilityModule* mobilityModule = new MobilityModule("ws://localhost", 9090,&moduleInfo);
-  /*
-  list<string> params;
-  BlinkService* service = new BlinkService("BLINK", params, false, false);
-  mobilityModule->addService(service);
-  TellService* tellService = new TellService("DECIR", params, false, false);
-  mobilityModule->addService(tellService);
-  MoveService* moveService = new MoveService("MOVER", params, false, false);
-  mobilityModule->addService(moveService);
   mobilityModule->start();
-  */
   while(true);
 }

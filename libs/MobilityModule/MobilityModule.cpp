@@ -2,9 +2,9 @@
 #ifndef MOBILITYMODULE_H
 #define MOBILITYMODULE_H 
 
-//#include<ModuleInfo.cpp>
 #include <Module.cpp>
 #include <CalibratingSensorsService.cpp>
+#include <MoveService.cpp>
 /*
 #include <wiringPi.h>
 #include <wiringPiI2C.h>
@@ -45,7 +45,8 @@ class MobilityModule: public Module{
     public:
         MobilityModule(std::string host, int port,MobilityModuleInfo *moduleInfo) :
             Module(host, port,moduleInfo) {
-                this->addService(new CalibratingSensorsService());
+               this->addService(new CalibratingSensorsService());
+               this->addService(new MoveService()); 
         }
 
 };
