@@ -21,5 +21,9 @@ class ModuleInfo{
         void setModule_id(string module_id){
             this->module_id=module_id;
         }
+        
+        virtual ~ModuleInfo(){
+        
+        }
 };
 #endif

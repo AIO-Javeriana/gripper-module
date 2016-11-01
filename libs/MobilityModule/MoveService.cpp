@@ -65,6 +65,7 @@ public:
     }
     
     bool execute(json params, string &msg,ModuleInfo* moduleInfo){
+        MobilityModuleInfo* mobilityModuleInfo=dynamic_cast<MobilityModuleInfo*>(moduleInfo); 
         HIGHLIGHT("MOVE: ");
         cout << params["EMOTIONAL_VALUE"] << endl;
         int direction=0;
