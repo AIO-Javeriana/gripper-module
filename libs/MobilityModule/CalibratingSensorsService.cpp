@@ -31,7 +31,7 @@ public:
         this->name="CALIBRATING-SENDORS";
         this->interruptible=false;
         this->service=false;
-        this->params.push_back("MODE");//true is automatic or false is manual 
+        this->params.push_back("MODE");//AUTOMATIC or false MANUAL
         Service::registerClass(name, &CalibratingSensorsService::create);
     }
     

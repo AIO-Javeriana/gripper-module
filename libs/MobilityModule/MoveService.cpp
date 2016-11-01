@@ -4,6 +4,7 @@
         
 #include <json.hpp>
 #include <iostream>
+#include <MobilityModuleInfo.cpp>
 #include <Services.cpp>
 #include <string>
 /*
@@ -77,6 +78,7 @@ public:
         }else if((direction_parameter).compare("TURN-LEFT")==0 ){
             direction=2;
         }
+        
         /*
         while(!isIntersection){
               move(reflectanceSensors,lastError,integral,isIntersection,direction);
