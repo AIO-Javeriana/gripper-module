@@ -33,7 +33,7 @@ public:
         return new TellService; 
     }
     
-    bool execute(json params, double modulationValue, string &msg,Module *module){
+    bool execute(json params, double modulationValue, string &msg,ModuleInfo* moduleInfo){
         HIGHLIGHT(params["TEXTO"]);
         cout << modulationValue << endl;
         msg = "TERMINEE";

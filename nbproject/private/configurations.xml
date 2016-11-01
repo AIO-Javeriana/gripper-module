@@ -16,8 +16,6 @@
           </df>
           <df name="mobility_module.dir">
           </df>
-          <df name="Progress">
-          </df>
           <df name="sioclient.dir">
             <df name="libs">
               <df name="socket.io">

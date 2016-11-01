@@ -70,6 +70,8 @@
           </incDir>
         </ccTool>
       </folder>
+      <item path="libs/AIO/ModuleInfo.cpp" ex="false" tool="1" flavor2="0">
+      </item>
       <item path="libs/socket.io/src/internal/sio_client_impl.cpp"
             ex="false"
             tool="1"

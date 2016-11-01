@@ -32,7 +32,7 @@ public:
         return new MoveService; 
     }
     
-    bool execute(json params, double modulationValue, string &msg,Module *module){
+    bool execute(json params, double modulationValue, string &msg,ModuleInfo* moduleInfo){
         HIGHLIGHT("Move");
         cout << modulationValue << endl;
         msg = "ADELANTE";

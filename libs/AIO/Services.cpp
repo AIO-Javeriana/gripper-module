@@ -65,7 +65,7 @@ class Service{
             this->service = service;
         }
         
-        virtual bool execute(json params, double modulationValue, string &msg, Module* module) = 0;
+        virtual bool execute(json params, double modulationValue, string &msg,ModuleInfo* moduleInfo) = 0;
         
         string getName(){
             return this->name;

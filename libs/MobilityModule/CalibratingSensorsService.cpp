@@ -40,7 +40,7 @@ public:
         return new CalibratingSensorsService; 
     }
     
-    bool execute(json params, double modulationValue, string &msg,Module *module){
+    bool execute(json params, double modulationValue, string &msg,ModuleInfo* moduleInfo){
         HIGHLIGHT("CALIBRATING-SENDORS: ");
         cout << modulationValue << endl;
         if(params["AUTOMATIC"]){
