@@ -39,6 +39,7 @@
       </toolsSet>
       <flagsDictionary>
         <element flagsID="0" commonFlags="-O3 -std=gnu++11"/>
+        <element flagsID="1" commonFlags="-std=gnu++11"/>
       </flagsDictionary>
       <codeAssistance>
       </codeAssistance>
@@ -52,9 +53,6 @@
             <incDir>
               <pElem>libs/socket.io/src</pElem>
             </incDir>
-            <preprocessorList>
-              <Elem>NDEBUG</Elem>
-            </preprocessorList>
           </ccTool>
         </makeTool>
         <preBuild>
@@ -72,6 +70,7 @@
             <pElem>build</pElem>
           </incDir>
           <preprocessorList>
+            <Elem>NDEBUG</Elem>
             <Elem>SIO_TLS</Elem>
           </preprocessorList>
         </ccTool>
@@ -99,7 +98,7 @@
         </ccTool>
       </item>
       <item path="main.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="0">
+        <ccTool flags="1">
           <incDir>
             <pElem>libs/AIO</pElem>
             <pElem>libs/MobilityModule</pElem>
