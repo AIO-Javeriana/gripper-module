@@ -40,7 +40,6 @@ using namespace std;
 // (400 lets the motors go at top speed; decrease to impose a speed limit)
 #define MAX_SPEED  200
 #define MIN_SPEED  -200
-#define CALIBRATION_SPEED 150
 #define THRESHOLD 800
 
 class MoveService: public Service{
