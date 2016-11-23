@@ -1,9 +1,9 @@
 //#include "ZumoMotors.h"
 
-#define PWM_L 1
-#define PWM_R 0
-#define DIR_L 6
-#define DIR_R 10
+#define PWM_L 0
+#define PWM_R 1
+#define DIR_L 10
+#define DIR_R 5
 #define DUTY_CYCLE_MAX 1023
 #define DUTY_CYCLE_MIN 0
 #define Kp 5
@@ -18,7 +18,7 @@
 #define PIN_STROBE 24
 
 
-s
+
 
 
 
@@ -36,7 +36,9 @@ ZumoMotors::ZumoMotors(void)
 }
 
 void ZumoMotors::init(){
+	cout<<" ZumoMotors::init"<<endl;
 	if (!ZumoMotors::wasInit){
+		
 		ZumoMotors::wasInit=true;
 		ZumoMotors::execute("sudo modprobe pwm-meson npwm=2");
 		ZumoMotors::execute("sudo modprobe pwm-ctrl");	
@@ -47,7 +49,7 @@ void ZumoMotors::init(){
 		digitalWrite (DIR_L, LOW);	// LOW - FORWARD / HIGH -BACKWARD
 		digitalWrite (PIN_STROBE, LOW);	
 		int freq=20000;
-		int duty=500;
+		int duty=0;
 		int enable=0;
 		ZumoMotors::setFrequency(freq,(int)PWM_R);
 		ZumoMotors::setFrequency(freq,(int)PWM_L);
@@ -57,8 +59,8 @@ void ZumoMotors::init(){
 		ZumoMotors::setEnable(enable,(int)PWM_L);
         // Launch velocity control threads
         //ZumoMotors::mobility_thread = new thread(ZumoMotors::mobilityThreadFunction);
-		ZumoMotors::left_velocity_thread = new thread(ZumoMotors::leftThread);
-     	ZumoMotors::right_velocity_thread=new thread(ZumoMotors::rightThread);
+		//ZumoMotors::left_velocity_thread = new thread(ZumoMotors::leftThread);
+     	//ZumoMotors::right_velocity_thread=new thread(ZumoMotors::rightThread);
 	}
 
 }
@@ -110,32 +112,35 @@ void ZumoMotors::flipRightMotor(bool flip)
 void ZumoMotors::setLeftSpeed(int speed)
 {
 	
-  init(); // initialize if necessary
+  //init(); // initialize if necessary
     
   bool reverse = false;
   
-  if (speed < 0)  {
+  if (speed < SPEED_MIN)  {
     speed = -speed; // make speed a positive quantity
     reverse = true;    // preserve the direction
   }
-  if (speed > 400) {  // Max 
-    	speed = 400;
+  if (speed > SPEED_MAX) {  // Max 
+    	speed = SPEED_MAX;
   }
 
   ZumoMotors::setEnable(1,(int)PWM_L);
+	/*  
   ZumoMotors::m.lock();
   ZumoMotors::left_velocity=speed ;
   ZumoMotors::m.unlock();
+//*/
 
-
-  //int duty=(double)speed * (double)1023.0 / (double)400.0; // default to using analogWrite, mapping 400 to 1023
-  //ZumoMotors::setDuty(duty,(int)PWM_L);    
+  int duty=(double)speed * (double)1023.0 / (double)400.0; // default to using analogWrite, mapping 400 to 1023
+  ZumoMotors::setDuty(duty,(int)PWM_L);    
   //ZumoMotors::setEnable(1,(int)PWM_L);
 
   if (reverse ||  ZumoMotors::flipLeft){ // flip if speed was negative or flipLeft setting is active, but not both
-    digitalWrite(DIR_L, HIGH);
-  }else{
     digitalWrite(DIR_L, LOW);
+		cout<<"left low"<<endl;
+  }else{
+    digitalWrite(DIR_L, HIGH);
+		cout<<"left high"<<endl;
 	}	
 //*/
 }
@@ -144,29 +149,33 @@ void ZumoMotors::setLeftSpeed(int speed)
 void ZumoMotors::setRightSpeed(int speed)
 {
 
-  init(); // initialize if necessary
-    
+  //init(); // initialize if necessary
   bool reverse = 0;
   
-  if (speed < 0){
-    speed = -speed;  // Make speed a positive quantity
-    reverse = 1;  // Preserve the direction
+  if (speed < SPEED_MIN)  {
+    speed = -speed; // make speed a positive quantity
+    reverse = true;    // preserve the direction
   }
-  if (speed > 400){  // Max PWM dutycycle
-    speed = 400;
+  if (speed > SPEED_MAX) {  // Max 
+    	speed = SPEED_MAX;
   }
 	ZumoMotors::setEnable(1,(int)PWM_R);
-	ZumoMotors::m.lock();
+	/*
+   ZumoMotors::m.lock();
 	ZumoMotors::right_velocity=speed;
 	ZumoMotors::m.unlock();
-  //int duty=(double)speed * (double)1023.0 / (double)400.0; // default to using analogWrite, mapping 400 to 1023
-  //ZumoMotors::setDuty(duty,(int)PWM_R);  
+	//*/	  
+  int duty=((double)speed * (double)1023.0 )/ (double)400.0; // default to using analogWrite, mapping 400 to 1023
+  cout<<duty<<" + "<<speed<<endl;
+  ZumoMotors::setDuty(duty,(int)PWM_R);  
   //ZumoMotors::setEnable(1,(int)PWM_R);
 
   if (reverse ||  ZumoMotors::flipRight) { // flip if speed was negative or flipRight setting is active, but not both
-		digitalWrite(DIR_R, HIGH);
+		digitalWrite(DIR_R, LOW);
+		cout<<"right low"<<endl;
   }else{
-    	digitalWrite(DIR_R, LOW);
+    	digitalWrite(DIR_R, HIGH);
+		cout<<"right high"<<endl;
 	}
 //*/
 }
@@ -193,27 +202,43 @@ void ZumoMotors::mobilityThreadFunction(){
 }
 
 void ZumoMotors::leftThread(){
+		cout<<"leftThread"<<endl;
 		while(true){
+//		delay(1);
+		
+			
+//cout << "Statrt izq " << endl;
 				if(ZumoMotors::calibrateLeft){
+					//digitalWrite(DIR_L, LOW);
 		cout << "Statrt izq " << endl;
 					ZumoMotors::maxPulsesLeft = ZumoMotors::calibrateMotor(PWM_L, ENCODER_L,CALIBRATION_TIME , TIME_WINDOW);
 		cout << "pulsos izq: " << ZumoMotors::maxPulsesLeft << endl;
 					ZumoMotors::calibrateLeft = false;
 				}else if (ZumoMotors::enableLeft){
 						 ZumoMotors::velocityController(PWM_L,ENCODER_L,left_velocity, ZumoMotors::maxPulsesLeft,  ZumoMotors::duty_cycle_left, TIME_WINDOW, ZumoMotors::last_error_left, ZumoMotors::integral_left);
+				}else{
+					delay(1);
+					
 				}
 		}
 }
 
 void ZumoMotors::rightThread(){
-    	while(true){
+
+		cout<<"rightThread"<<endl;
+		while(true){
+
+	//cout << "Statrt der " << endl;
 				if(ZumoMotors::calibrateRight){
+					digitalWrite(DIR_R, LOW);
 					ZumoMotors::maxPulsesRight = ZumoMotors::calibrateMotor(PWM_R, ENCODER_R,CALIBRATION_TIME , TIME_WINDOW);
-		cout << "pulsos derecha: " << ZumoMotors::maxPulsesRight << endl;
+			cout << "pulsos derecha: " << ZumoMotors::maxPulsesRight << endl;
 					ZumoMotors::calibrateRight = false;
 				}else if (ZumoMotors::enableRight){
 						 ZumoMotors::velocityController(PWM_R,ENCODER_R,right_velocity, ZumoMotors::maxPulsesRight,  ZumoMotors::duty_cycle_right, TIME_WINDOW, ZumoMotors::last_error_right, ZumoMotors::integral_right);
 	//cout<<ZumoMotors::duty_cycle_right<<" "<<ZumoMotors::last_error_right<<endl;
+				}else{
+					delay(1);
 				}
 		}
 }
@@ -227,7 +252,7 @@ void ZumoMotors::velocityController(int motor, int encoder,int referenceVelocity
 	float error = reference - pulses;
 	//Controlando los dos pwm
 	duty_cycle += error*Kp+Kd*(error - lastError)+Ki*(integral+error);
-	cout<<motor<<" "<<(error*Kp+Kd*(error - lastError)+Ki*(integral+error))<<" "<<reference<<" "<<error<<endl;
+	//cout<<motor<<" "<<(error*Kp+Kd*(error - lastError)+Ki*(integral+error))<<" "<<reference<<" "<<error<<endl;
 	integral=integral+error;
 	lastError=error;
 	if(duty_cycle>DUTY_CYCLE_MAX ){
@@ -261,7 +286,7 @@ int ZumoMotors::calibrateMotor(int motor, int encoder,int calibration_time, int 
 	}
 	enable=0;
 	ZumoMotors::setEnable(enable,motor);
-	cout<<total_pulses<<"  "<<count<<" "<<total_pulses/count<<endl;
+	//cout<<total_pulses<<"  "<<count<<" "<<total_pulses/count<<endl;
 	return total_pulses/count;
 }
 
@@ -320,6 +345,7 @@ int ZumoMotors::getPulseFromSpeed(int speed, int maxPulses){
 
     
 void ZumoMotors::enableCalibration(){
+	cout<<"enableCalibration"<<endl;
 	ZumoMotors::enableCalibrationLeft();    
 	ZumoMotors::enableCalibrationRight(); 	
 }    

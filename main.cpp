@@ -1,9 +1,9 @@
+#include <iostream>
+//#include <errno.h>
 
-#include <Module.cpp>
-#include <CommunicationChannel.cpp>
+//#include <Module.cpp>
+//#include <CommunicationChannel.cpp>
 #include <string>
-#include <queue>
-#include <map>
 //-----------------------
 #include <stdio.h>
 #include <wiringPi.h>
@@ -12,7 +12,6 @@
 
 #include <ZumoReflectanceSensorArray.h>
 #include <ZumoMotors.h>
-#include <LSM303.h>
 
 //using json = nlohmann::json;
 using namespace std;
@@ -24,9 +23,11 @@ using namespace std;
 #define M2DIR 21
 // This is the maximum speed the motors will be allowed to turn.
 // (400 lets the motors go at top speed; decrease to impose a speed limit)
-#define MAX_SPEED  200
-#define MIN_SPEED  -200
-#define CALIBRATION_SPEED 150
+#define MAX_SPEED  400
+#define MIN_SPEED  -400
+#define NORMAL_SPEED  200
+
+#define CALIBRATION_SPEED 300
 #define THRESHOLD 800
 void testADC(){
 
@@ -76,7 +77,7 @@ void followLine(int position ,int &lastError,int &integral)
   // your particular Zumo and line course.
   //int speedDifference = error / 4 + 6 * (error - lastError);
   	
-  int speedDifference = error/4  ;+ 6 * (error - lastError)+(integral+error)/8;	
+  int speedDifference = error/4  ;//+ 6 * (error - lastError)+(integral+error)/8;	
 
   integral=integral+error;
   lastError = error;
@@ -84,8 +85,8 @@ void followLine(int position ,int &lastError,int &integral)
   // Get individual motor speeds.  The sign of speedDifference
   // determines if the robot turns left or right.
   
-  int m1Speed = MAX_SPEED + speedDifference;
-  int m2Speed = MAX_SPEED - speedDifference;
+  int m1Speed = NORMAL_SPEED + speedDifference;
+  int m2Speed = NORMAL_SPEED - speedDifference;
   //*/
   /*  
   int m1Speed =  speedDifference;
@@ -107,6 +108,7 @@ void followLine(int position ,int &lastError,int &integral)
     m2Speed = MAX_SPEED;
 
   ZumoMotors::setSpeeds(m1Speed, m2Speed);
+  //delay(15);
   
 }
 
@@ -163,7 +165,7 @@ void move(ZumoReflectanceSensorArray &reflectanceSensors,int &lastError,int &int
 }
 
 void automaticSensorCalibration(ZumoReflectanceSensorArray &reflectanceSensors){
- ZumoMotors::init();
+  //ZumoMotors::init();
  // Initialize the reflectance sensors module
   reflectanceSensors.init();
 
@@ -175,7 +177,7 @@ void automaticSensorCalibration(ZumoReflectanceSensorArray &reflectanceSensors){
   
   int i; 
   unsigned long startTime = millis();
-  unsigned long timeLimit=800;
+  unsigned long timeLimit=1000;
   for(i = 0; i < 2; i++)
   {
 	startTime = millis();
@@ -194,14 +196,14 @@ void automaticSensorCalibration(ZumoReflectanceSensorArray &reflectanceSensors){
 	  }
 	ZumoMotors::setSpeeds(0, 0);
 	startTime = millis();
- 	ZumoMotors::setSpeeds(CALIBRATION_SPEED , -CALIBRATION_SPEED );	
+ 	ZumoMotors::setSpeeds(-CALIBRATION_SPEED , CALIBRATION_SPEED );	
 	while(millis() - startTime < timeLimit)   // make the calibration take 10 seconds
 	  {
 		reflectanceSensors.calibrate();
 	  }
         ZumoMotors::setSpeeds(0, 0);
         startTime = millis();
-        ZumoMotors::setSpeeds(-CALIBRATION_SPEED , CALIBRATION_SPEED );
+        ZumoMotors::setSpeeds(CALIBRATION_SPEED , -CALIBRATION_SPEED );
 	while(millis() - startTime < timeLimit)   // make the calibration take 10 seconds
 	  {
 		reflectanceSensors.calibrate();
@@ -230,16 +232,14 @@ void setup(ZumoReflectanceSensorArray &reflectanceSensors)
 {
   // Play a little welcome song
   //buzzer.play(">g32>>c32");
-  ZumoMotors::init();
+  //ZumoMotors::init();
 
   // Turn on LED to indicate we are in calibration mode
-  pinMode (LED, OUTPUT) ;
-  digitalWrite (LED, HIGH) ;	// On
+ 
  
   //manualSensorCalibration(reflectanceSensors);
   automaticSensorCalibration(reflectanceSensors);
   // Turn off LED to indicate we are through with calibration
-  digitalWrite (LED, LOW) ;	// Off
   //buzzer.play(">g32>>c32");
 
   // Wait for the user button to be pressed and released
@@ -264,7 +264,7 @@ void setup(ZumoReflectanceSensorArray &reflectanceSensors)
 	  	move(reflectanceSensors,lastError,integral,isIntersection,direction);
 	  }
 	  ZumoMotors::setSpeeds(0,0 );
-  	  ZumoMotors::init(); 
+  	  //ZumoMotors::init(); 
     
     }while(direction!=3);
 }
@@ -272,12 +272,13 @@ void setup(ZumoReflectanceSensorArray &reflectanceSensors)
 void testReflectanceSensorArray(ZumoReflectanceSensorArray reflectanceSensors){
 
   //pinMode (LED, OUTPUT) ;
-	ZumoMotors::init(); 
+	//ZumoMotors::init(); 
 	ZumoMotors::setSpeeds(0,0 );
   
   unsigned int sensorValues[NUM_SENSORS];
   reflectanceSensors.init();
   //digitalWrite (LED, HIGH) ;	// On
+ cout<<"Strated Calibration sensors<-"<<endl;
   unsigned long startTime = millis();
   
  while(millis() - startTime < 10000)   // make the calibration take 10 seconds
@@ -304,16 +305,24 @@ void testReflectanceSensorArray(ZumoReflectanceSensorArray reflectanceSensors){
 
 void test(){
 
+ int a;
   wiringPiSetup () ;
-  printf ("ZumoReflectanceSensorArray\n") ;
+  //printf ("->ZumoReflectanceSensorArray\n") ;
   ZumoReflectanceSensorArray reflectanceSensors;
   ZumoMotors::init(); 
-  testReflectanceSensorArray(reflectanceSensors);
+  
+  delay(1000);
+  //ZumoMotors::enableCalibration(); 
+  //while(!ZumoMotors::calibrationFinished());
+  cout<<"Strated Module Moblitity<-"<<endl;
+  //cin>>a;
+  //ZumoMotors::setSpeeds(400,-400 );	
+  //cin>>a;
+  //*/	t
+  //testReflectanceSensorArray(reflectanceSensors);
   //delay(2000); 
-  //ZumoMotors::setSpeeds(100, 100);
-  //setup(reflectanceSensors);
+  setup(reflectanceSensors);
   ZumoMotors::setSpeeds(0,0 );
-  ZumoMotors::init(); 
   
  
 }
@@ -322,7 +331,6 @@ void test(){
 void start();
 int main(int argc ,const char* args[])
 {
-	cout<<"Strated Module Moblitity"<<endl;
 	test();
 	//hoint16_t a;
   //start();

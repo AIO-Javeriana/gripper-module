@@ -80,13 +80,13 @@
 
 
 
-#define ZUMO_SENSOR_ARRAY_DEFAULT_EMITTER_PIN  24
-#define _5 2
+#define ZUMO_SENSOR_ARRAY_DEFAULT_EMITTER_PIN  27
+#define _5_ 2
 #define A2 7
 #define A0 0
-#define _11 3
+#define _11_ 3
 #define A3 14
-#define _4 13
+#define _4_ 13
 
 
 class ZumoReflectanceSensorArray : public QTRSensorsRC
@@ -152,7 +152,7 @@ class ZumoReflectanceSensorArray : public QTRSensorsRC
    */
   void init(unsigned char emitterPin = ZUMO_SENSOR_ARRAY_DEFAULT_EMITTER_PIN)
   {
-    unsigned char sensorPins[] = {_5, A2, A0, _11, A3, _4 };
+    unsigned char sensorPins[] = {_4_, A3, _11_, A0, A2, _5_ };
     //unsigned char sensorPins[] = { _11};
     //unsigned char sensorPins[] = { 0,10,6,13 };
     QTRSensorsRC::init(sensorPins, sizeof(sensorPins), 2000, emitterPin);
