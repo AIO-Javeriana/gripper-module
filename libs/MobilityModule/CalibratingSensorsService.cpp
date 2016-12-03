@@ -23,16 +23,13 @@
 #endif
 using namespace std;
 
-#define	LED	24
+
 #define NUM_SENSORS 6
-#define PORT_ADC1 0
-#define M1DIR 3
-#define M2DIR 21
+
+
 // This is the maximum speed the motors will be allowed to turn.
 // (400 lets the motors go at top speed; decrease to impose a speed limit)
-#define MAX_SPEED  200
-#define MIN_SPEED  -200
-#define CALIBRATION_SPEED 250
+#define CALIBRATION_SPEED 300
 #define THRESHOLD 800
 
 class CalibratingSensorsService: public Service{
@@ -40,7 +37,7 @@ class CalibratingSensorsService: public Service{
 public:
     
     CalibratingSensorsService():Service(){
-        this->name="CALIBRATING-SENDORS";
+        this->name="CALIBRATING-SENSORS";
         this->interruptible=false;
         this->service=false;
         this->params.push_back("MODE");//AUTOMATIC or false MANUAL
@@ -57,28 +54,27 @@ public:
     
     bool execute(json params, string &msg,ModuleInfo* moduleInfo){
 		MobilityModuleInfo* mobilityModuleInfo=dynamic_cast<MobilityModuleInfo*>(moduleInfo);
-        HIGHLIGHT("CALIBRATING-SENDORS: ");
+        HIGHLIGHT("CALIBRATING-SENSORS: ");
         cout << params["EMOTIONAL_VALUE"] <<" "<<params["MODE"] << endl;
         string mode=params["MODE"];
-        ZumoMotors::init();
+        ZumoMotors::setSpeeds(0,0 );
         // Turn on LED to indicate we are in calibration mode
-        pinMode (LED, OUTPUT) ;
-        digitalWrite (LED, HIGH) ;	// On
+        //pinMode (LED, OUTPUT) ;
+        //digitalWrite (LED, HIGH) ;	// On
         //*//*
         if((mode).compare("AUTOMATIC")==0 ){
             automaticSensorCalibration(mobilityModuleInfo->getReflectanceSensorArray());
         }else if((mode).compare("MANUAL")==0 ){
             manualSensorCalibration(mobilityModuleInfo->getReflectanceSensorArray());
         }
-        digitalWrite (LED, LOW) ;	// Off
+        //digitalWrite (LED, LOW) ;	// Off
         //*/
         msg = "TERMINEE";
         return true;
     }
-    
     void automaticSensorCalibration(ZumoReflectanceSensorArray &reflectanceSensors){
         cout<<"AUTOMATIC CALIBRATION"<<endl;
-            ZumoMotors::init();
+            ZumoMotors::setSpeeds(0,0 );
             // Initialize the reflectance sensors module
             reflectanceSensors.init();
 
@@ -86,44 +82,45 @@ public:
             //button.waitForButton();
             // Wait 1 second and then begin automatic sensor calibration
             // by rotating in place to sweep the sensors over the line
-            delay(1000);
+            //delay(1000);
 
             int i; 
             unsigned long startTime = millis();
-            unsigned long timeLimit=800;
-            for (i = 0; i < 2; i++){
-                startTime = millis();
-                ZumoMotors::setSpeeds(-CALIBRATION_SPEED , CALIBRATION_SPEED );	
-                while (millis() - startTime < timeLimit)   // make the calibration take 10 seconds
-                {
-                    reflectanceSensors.calibrate();
-                    //delay(10);
-                }
-                ZumoMotors::setSpeeds(0, 0);
-                startTime = millis();
-                ZumoMotors::setSpeeds(CALIBRATION_SPEED , -CALIBRATION_SPEED );
-                while (millis() - startTime < timeLimit)   // make the calibration take 10 seconds
-                {
-                    reflectanceSensors.calibrate();
-                }
-                ZumoMotors::setSpeeds(0, 0);
-                startTime = millis();
-                ZumoMotors::setSpeeds(CALIBRATION_SPEED , -CALIBRATION_SPEED );	
-                while (millis() - startTime < timeLimit)   // make the calibration take 10 seconds
-                {
-                    reflectanceSensors.calibrate();
-                }
-                ZumoMotors::setSpeeds(0, 0);
-                startTime = millis();
-                ZumoMotors::setSpeeds(-CALIBRATION_SPEED , CALIBRATION_SPEED );
-                while(millis() - startTime < timeLimit)   // make the calibration take 10 seconds
-                {
-                    reflectanceSensors.calibrate();
-                }
-                // Since our counter runs to 80, the total delay will be
-                // 80*20 = 1600 ms.
-
-            }
+            unsigned long timeLimit=1300;
+			  for(i = 0; i < 2; i++)
+			  {
+				startTime = millis();
+			 	ZumoMotors::setSpeeds(-CALIBRATION_SPEED , CALIBRATION_SPEED );	
+				while(millis() - startTime < timeLimit)   // make the calibration take 10 seconds
+				  {
+					reflectanceSensors.calibrate();
+					//delay(10);
+				  }
+					ZumoMotors::setSpeeds(0, 0);
+					startTime = millis();
+					ZumoMotors::setSpeeds(CALIBRATION_SPEED , -CALIBRATION_SPEED );
+				while(millis() - startTime < timeLimit)   // make the calibration take 10 seconds
+				  {
+					reflectanceSensors.calibrate();
+				  }
+				ZumoMotors::setSpeeds(0, 0);
+				startTime = millis();
+			 	ZumoMotors::setSpeeds(CALIBRATION_SPEED , -CALIBRATION_SPEED );	
+				while(millis() - startTime < timeLimit)   // make the calibration take 10 seconds
+				  {
+					reflectanceSensors.calibrate();
+				  }
+					ZumoMotors::setSpeeds(0, 0);
+					startTime = millis();
+					ZumoMotors::setSpeeds(-CALIBRATION_SPEED , CALIBRATION_SPEED );
+				while(millis() - startTime < timeLimit)   // make the calibration take 10 seconds
+				  {
+					reflectanceSensors.calibrate();
+				  }
+				// Since our counter runs to 80, the total delay will be
+				// 80*20 = 1600 ms.
+	
+			  }
             ZumoMotors::setSpeeds(0,0);
          
          

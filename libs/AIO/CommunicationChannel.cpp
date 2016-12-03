@@ -17,7 +17,7 @@
 #include <CommunicationEvents.cpp>
 #include <Module.cpp>
 #include <Services.cpp>
-
+#include <set>
 
 #include <thread>
 
@@ -112,7 +112,8 @@ class CommunicationChannel{
     connection_listener l;
     socket::ptr current_socket;
     Services* services;
-    bool subscribed;
+    bool connected;
+	set<string> subscribed;
     //string module_id;
     string url="";
     ModuleInfo* moduleInfo;
@@ -122,7 +123,7 @@ public:
 
     CommunicationChannel(string host,int port,Services* services,ModuleInfo* moduleInfo):l(h){
         this->moduleInfo=moduleInfo;
-        this->subscribed=false;
+        this->connected=false;
         this->url=host+":"+to_string(port);
         this->services=services;
     }
@@ -141,6 +142,7 @@ public:
         current_socket = h.socket();
         bind_events();
         subscription(module_info);
+		services->start(current_socket, l.getLock());
     }
 
     void subscription(string &module_info){
@@ -154,7 +156,7 @@ public:
                         this->moduleInfo->setModule_id(dataJSON["MODULE_ID"]);
                         HIGHLIGHT("MODULE SUBSCRIBED \n ID "<<this->moduleInfo->getModule_id());
         				// EM(user<<":"<<message);
-                        this->subscribed=true;
+                        this->connected=true;
 
                         l.getCond()->notify_all();
                         l.getLock()->unlock();
@@ -273,6 +275,15 @@ public:
         }
     }
     
+	void addSubscribed(string name){
+		this->subscribed.insert(name);
+	}
+
+	void removeSubscribed(string name){
+		this->subscribed.erase(name);
+	}
+
+
     ~CommunicationChannel(){
       cout<<"Destructor CommunicationChannel"<<endl;
       current_socket->off_all();

@@ -1,4 +1,7 @@
 
+#ifndef COMMUNICATIONEVENTS_H
+#define COMMUNICATIONEVENTS_H
+
 using namespace std;
 
 enum CommunicationEvents
@@ -52,3 +55,5 @@ string toString(CommunicationEvents c)
     }
     return "";
 }
+
+#endif

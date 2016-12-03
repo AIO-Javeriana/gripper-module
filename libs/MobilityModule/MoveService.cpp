@@ -33,13 +33,12 @@ using namespace std;
 
 #define	LED	24
 #define NUM_SENSORS 6
-#define PORT_ADC1 0
-#define M1DIR 3
-#define M2DIR 21
+
 // This is the maximum speed the motors will be allowed to turn.
 // (400 lets the motors go at top speed; decrease to impose a speed limit)
-#define MAX_SPEED  200
-#define MIN_SPEED  -200
+#define MAX_SPEED  400
+#define MIN_SPEED  -400
+#define NORMAL_SPEED  200
 #define THRESHOLD 800
 
 class MoveService: public Service{
@@ -51,7 +50,8 @@ public:
         this->interruptible=false;
         this->service=false;
         this->params.push_back("DIRECTION");//NONE, TURN-RIGHT,TURN-LEFT 
-        Service::registerClass(name, &MoveService::create);
+		 ZumoMotors::init();         
+		Service::registerClass(name, &MoveService::create);
     
     }
     
@@ -84,7 +84,7 @@ public:
               move(mobilityModuleInfo->getReflectanceSensorArray(),lastError,integral,isIntersection,direction);
         }
         ZumoMotors::setSpeeds(0,0 );
-        ZumoMotors::init(); 
+       
         //*/
         return true;
     }
@@ -122,20 +122,20 @@ public:
         // You probably want to use trial and error to tune these constants for
         // your particular Zumo and line course.
         //int speedDifference = error / 4 + 6 * (error - lastError);
-        int speedDifference = error/4  ;+ 6 * (error - lastError)+(integral+error)/8;	
+        int speedDifference = error/4  ;//+ 6 * (error - lastError)+(integral+error)/8;	
         integral=integral+error;
         lastError = error;
         // Get individual motor speeds.  The sign of speedDifference
         // determines if the robot turns left or right.
 
-        int m1Speed = MAX_SPEED + speedDifference;
-        int m2Speed = MAX_SPEED - speedDifference;
+        int m1Speed = NORMAL_SPEED + speedDifference;
+  		int m2Speed = NORMAL_SPEED - speedDifference;
         //*/
         /*
         int m1Speed =  speedDifference;
         int m2Speed =  -speedDifference;
         //*/
-        cout<<" m1Speed "<<m1Speed<<" m2Speed "<<m2Speed<<" error "<< error <<" speedDifference "<<speedDifference<<" integral "<<integral <<endl;
+        //cout<<" m1Speed "<<m1Speed<<" m2Speed "<<m2Speed<<" error "<< error <<" speedDifference "<<speedDifference<<" integral "<<integral <<endl;
         // Here we constrain our motor speeds to be between 0 and MAX_SPEED.
         // Generally speaking, one motor will always be turning at MAX_SPEED
         // and the other will be at MAX_SPEED-|speedDifference| if that is positive,

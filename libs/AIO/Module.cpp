@@ -27,6 +27,9 @@ class Module{
             this->services->addService(service);
         }
         
+		void addSensorService(SensorService* sensorService){
+            this->services->addSensorService(sensorService);
+		}
         void start(){
             json module_info = this->services->getInfo();
             module_info["MODULE_ID"] =  this->moduleInfo->getModule_id();

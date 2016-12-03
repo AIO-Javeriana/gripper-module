@@ -1,9 +1,9 @@
 //#include "ZumoMotors.h"
 
-#define PWM_L 0
-#define PWM_R 1
-#define DIR_L 10
-#define DIR_R 5
+#define PWM_L 1
+#define PWM_R 0
+#define DIR_L 5
+#define DIR_R 10
 #define DUTY_CYCLE_MAX 1023
 #define DUTY_CYCLE_MIN 0
 #define Kp 5
@@ -48,6 +48,8 @@ void ZumoMotors::init(){
 		digitalWrite (DIR_R, LOW) ;	// LOW - FORWARD / HIGH -BACKWARD
 		digitalWrite (DIR_L, LOW);	// LOW - FORWARD / HIGH -BACKWARD
 		digitalWrite (PIN_STROBE, LOW);	
+		pinMode (6, OUTPUT) ;
+		digitalWrite (6, LOW) ;	// LOW - FORWARD / HIGH -BACKWARD
 		int freq=20000;
 		int duty=0;
 		int enable=0;
@@ -137,10 +139,10 @@ void ZumoMotors::setLeftSpeed(int speed)
 
   if (reverse ||  ZumoMotors::flipLeft){ // flip if speed was negative or flipLeft setting is active, but not both
     digitalWrite(DIR_L, LOW);
-		cout<<"left low"<<endl;
+		//cout<<"left low"<<endl;
   }else{
     digitalWrite(DIR_L, HIGH);
-		cout<<"left high"<<endl;
+		//cout<<"left high"<<endl;
 	}	
 //*/
 }
@@ -172,10 +174,10 @@ void ZumoMotors::setRightSpeed(int speed)
 
   if (reverse ||  ZumoMotors::flipRight) { // flip if speed was negative or flipRight setting is active, but not both
 		digitalWrite(DIR_R, LOW);
-		cout<<"right low"<<endl;
+		//cout<<"right low"<<endl;
   }else{
     	digitalWrite(DIR_R, HIGH);
-		cout<<"right high"<<endl;
+		//cout<<"right high"<<endl;
 	}
 //*/
 }

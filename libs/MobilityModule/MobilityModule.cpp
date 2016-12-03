@@ -6,6 +6,7 @@
 #include <MobilityModuleInfo.cpp>
 #include <CalibratingSensorsService.cpp>
 #include <MoveService.cpp>
+#include <BatterySensorService.cpp>
 #include <wiringPi.h>
 
 class MobilityModule: public Module{
@@ -14,8 +15,11 @@ class MobilityModule: public Module{
         MobilityModule(std::string host, int port,MobilityModuleInfo *moduleInfo) :
             Module(host, port,moduleInfo) {
 			    wiringPiSetup () ;
-               this->addService(new CalibratingSensorsService());
-               this->addService(new MoveService()); 
+				CalibratingSensorsService *css=new CalibratingSensorsService();
+               this->addService(css);
+               this->addService(new MoveService());
+			   this->addSensorService(new BatterySensorService(this->moduleInfo->getModule_id()));
+				//css->automaticSensorCalibration(moduleInfo->getReflectanceSensorArray());
         }
 
 };

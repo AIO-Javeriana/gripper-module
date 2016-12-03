@@ -14,12 +14,12 @@
 #include <ZumoMotors.h>
 
 
-//using json = nlohmann::json;
+using json = nlohmann::json;
 using namespace std;
 
 #define	LED	24
 #define NUM_SENSORS 6
-#define PORT_ADC1 0
+#define PORT_ADC1 1
 #define M1DIR 3
 #define M2DIR 21
 // This is the maximum speed the motors will be allowed to turn.
@@ -33,10 +33,11 @@ using namespace std;
 void testADC(){
 
 	int data;
+	pinMode (PORT_ADC1, OUTPUT) ;
 	while(1){
-	data=analogRead(PORT_ADC1);
+		data=analogRead(PORT_ADC1);
 		cout<<" DATA "<<data<<endl;
-		
+		delay(1000);
 	}
 
 
@@ -78,7 +79,7 @@ void followLine(int position ,int &lastError,int &integral)
   // your particular Zumo and line course.
   //int speedDifference = error / 4 + 6 * (error - lastError);
   	
-  int speedDifference = error/4  ;//+ 6 * (error - lastError)+(integral+error)/8;	
+  int speedDifference = error/4 ; //+ 6 * (error - lastError)+(integral+error)/8;	
 
   integral=integral+error;
   lastError = error;
@@ -178,41 +179,41 @@ void automaticSensorCalibration(ZumoReflectanceSensorArray &reflectanceSensors){
   
   int i; 
   unsigned long startTime = millis();
-  unsigned long timeLimit=1000;
-  for(i = 0; i < 2; i++)
-  {
-	startTime = millis();
- 	ZumoMotors::setSpeeds(-CALIBRATION_SPEED , CALIBRATION_SPEED );	
-	while(millis() - startTime < timeLimit)   // make the calibration take 10 seconds
-	  {
-		reflectanceSensors.calibrate();
-		//delay(10);
-	  }
-        ZumoMotors::setSpeeds(0, 0);
-        startTime = millis();
-        ZumoMotors::setSpeeds(CALIBRATION_SPEED , -CALIBRATION_SPEED );
-	while(millis() - startTime < timeLimit)   // make the calibration take 10 seconds
-	  {
-		reflectanceSensors.calibrate();
-	  }
-	ZumoMotors::setSpeeds(0, 0);
-	startTime = millis();
- 	ZumoMotors::setSpeeds(-CALIBRATION_SPEED , CALIBRATION_SPEED );	
-	while(millis() - startTime < timeLimit)   // make the calibration take 10 seconds
-	  {
-		reflectanceSensors.calibrate();
-	  }
-        ZumoMotors::setSpeeds(0, 0);
-        startTime = millis();
-        ZumoMotors::setSpeeds(CALIBRATION_SPEED , -CALIBRATION_SPEED );
-	while(millis() - startTime < timeLimit)   // make the calibration take 10 seconds
-	  {
-		reflectanceSensors.calibrate();
-	  }
-    // Since our counter runs to 80, the total delay will be
-    // 80*20 = 1600 ms.
-    
-  }
+   unsigned long timeLimit=1300;
+			  for(i = 0; i < 2; i++)
+			  {
+				startTime = millis();
+			 	ZumoMotors::setSpeeds(-CALIBRATION_SPEED , CALIBRATION_SPEED );	
+				while(millis() - startTime < timeLimit)   // make the calibration take 10 seconds
+				  {
+					reflectanceSensors.calibrate();
+					//delay(10);
+				  }
+					ZumoMotors::setSpeeds(0, 0);
+					startTime = millis();
+					ZumoMotors::setSpeeds(CALIBRATION_SPEED , -CALIBRATION_SPEED );
+				while(millis() - startTime < timeLimit)   // make the calibration take 10 seconds
+				  {
+					reflectanceSensors.calibrate();
+				  }
+				ZumoMotors::setSpeeds(0, 0);
+				startTime = millis();
+			 	ZumoMotors::setSpeeds(CALIBRATION_SPEED , -CALIBRATION_SPEED );	
+				while(millis() - startTime < timeLimit)   // make the calibration take 10 seconds
+				  {
+					reflectanceSensors.calibrate();
+				  }
+					ZumoMotors::setSpeeds(0, 0);
+					startTime = millis();
+					ZumoMotors::setSpeeds(-CALIBRATION_SPEED , CALIBRATION_SPEED );
+				while(millis() - startTime < timeLimit)   // make the calibration take 10 seconds
+				  {
+					reflectanceSensors.calibrate();
+				  }
+				// Since our counter runs to 80, the total delay will be
+				// 80*20 = 1600 ms.
+	
+			  }
   ZumoMotors::setSpeeds(0,0);
 }
 
@@ -304,6 +305,7 @@ void testReflectanceSensorArray(ZumoReflectanceSensorArray reflectanceSensors){
 
 }
 
+thread* battery_thread;
 void test(){
 
  int a;
@@ -317,28 +319,29 @@ void test(){
   //while(!ZumoMotors::calibrationFinished());
   cout<<"Strated Module Moblitity<-"<<endl;
   //cin>>a;
-  //ZumoMotors::setSpeeds(400,-400 );	
+  //ZumoMotors::setSpeeds(-400,-400 );	
   //cin>>a;
   //*/	t
   //testReflectanceSensorArray(reflectanceSensors);
   //delay(2000); 
-  setup(reflectanceSensors);
+  //setup(reflectanceSensors);
+  battery_thread = new thread(testADC);
   ZumoMotors::setSpeeds(0,0 );
-  
- 
+  while(1);
+
 }
 
 
 void start();
 int main(int argc ,const char* args[])
 {
-	test();
+	//test();
 	//hoint16_t a;
-  //start();
+    start();
 	return 0;
 }
 
-/*
+//*
 void start(){
   string module_id="mobility_module";
   json module_info={
@@ -377,4 +380,5 @@ void start(){
   }
   HIGHLIGHT("Closing...");
   st.endConnection();
-}*/
+}
+//*/
