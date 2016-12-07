@@ -19,7 +19,7 @@ class MobilityModule: public Module{
                this->addService(css);
                this->addService(new MoveService());
 			   this->addSensorService(new BatterySensorService(this->moduleInfo->getModule_id()));
-				//css->automaticSensorCalibration(moduleInfo->getReflectanceSensorArray());
+				css->automaticSensorCalibration(moduleInfo->getReflectanceSensorArray());
         }
 
 };

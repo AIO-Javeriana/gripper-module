@@ -28,7 +28,7 @@ public:
 
     BatterySensorService(string module_ID):SensorService(module_ID){
 		pinMode(PORT_ADC1, INPUT) ;
-		this->name = BatterySensorService::service_name = "SENSOR_SERVICE";
+		this->name = BatterySensorService::service_name = "BATTERY_LVL";
 		this->execute_function = &execute;
 		cout << " BATTERY SENSOR SERVICE STARTED " << endl;
 	}
@@ -39,12 +39,12 @@ public:
 		string module_ID = SensorService::module_ID;
         while(1){
 			data=analogRead(PORT_ADC1);
-			json data_JSON = {"BATTERY_LVL",data};
+			double level = ((double)data/1024)*100;
 			json sensor_data={
                             {"MODULE_ID",module_ID},
                             {"EVENT_NAME", toString(CommunicationEvents::SENSOR_SERVICE)},
-                            {"SENSOR-SERVICE-NAME",BatterySensorService::service_name},
-                            {"DATA", data_JSON}
+                            {"SENSOR_SERVICE_NAME",BatterySensorService::service_name},
+                            {"DATA", {{"BATTERY_LVL", level}}}
                 };		
 			SensorService::_lock->lock();
 				SensorService::current_socket->emit(toString(CommunicationEvents::SENSOR_SERVICE), sensor_data.dump() );			
